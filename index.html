@@ -1,0 +1,1285 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Plataforma de Sorteos — Prototipo</title>
+<meta name="description" content="Prototipo clicable para revisión de flujo y revisión legal. Sin pagos reales ni premios.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f4ff;--surface:#fff;--ink:#1a1238;--muted:#6a6590;--line:#e4dff7;
+  --brand:#5b2ef0;--brand-ink:#fff;--cta:#b8f54a;--cta-ink:#17122e;--gold:#ffc53d;
+  --ok:#0f9d6b;--warn:#b86e00;--bad:#d6362f;--chip:#efeaff;--taken:#ece8fa;
+  --hero-a:#120a36;--hero-b:#2a1590;--hero-c:#6b34ff;
+  --shadow:0 10px 30px rgba(42,21,144,.12);
+  --display:"Sora","Inter",system-ui,sans-serif;--text:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e0a24;--surface:#18123a;--ink:#f1eeff;--muted:#aaa3d6;--line:#2c2458;
+    --brand:#9a7bff;--brand-ink:#0e0a24;--ok:#4be3a8;--warn:#f5a14b;--bad:#ff7a72;--chip:#241c52;--taken:#211a4a;
+    --shadow:0 10px 30px rgba(0,0,0,.45);
+  }
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 var(--text)}
+a{color:var(--brand)}
+h1,h2,h3{font-family:var(--display);line-height:1.15;margin:0 0 .5em;letter-spacing:-.01em}
+h1{font-size:clamp(2rem,6vw,3.4rem);font-weight:800}
+h2{font-size:clamp(1.4rem,3.5vw,2rem);font-weight:700}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0 0 1em}
+.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+.muted{color:var(--muted)}.small{font-size:.85rem}.center{text-align:center}
+.demo-banner{background:var(--gold);color:#2b1d00;text-align:center;font-size:.8rem;font-weight:700;padding:6px 12px}
+
+/* Header */
+header.top{background:var(--hero-a);color:#fff;position:sticky;top:0;z-index:30}
+header.top .wrap{display:flex;align-items:center;gap:12px;min-height:60px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;font-size:1.15rem;color:#fff;text-decoration:none}
+.logo svg{width:28px;height:28px}
+.logo em{font-style:normal;color:var(--cta)}
+nav.main{display:flex;gap:2px;margin-left:auto;align-items:center;flex-wrap:wrap}
+nav.main a{padding:8px 12px;border-radius:999px;text-decoration:none;color:#cfc8f5;font-weight:600;font-size:.92rem}
+nav.main a:hover,nav.main a.on{background:rgba(255,255,255,.12);color:#fff}
+details.demo{position:relative}
+details.demo summary{list-style:none;cursor:pointer;padding:8px 12px;border-radius:999px;border:1px dashed rgba(255,255,255,.4);color:var(--gold);font-weight:700;font-size:.85rem}
+details.demo summary::-webkit-details-marker{display:none}
+details.demo div{position:absolute;right:0;top:110%;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);padding:6px;min-width:190px}
+details.demo a{display:block;color:var(--ink);padding:10px 12px;border-radius:8px;text-decoration:none;font-weight:600}
+details.demo a:hover{background:var(--chip)}
+@media (max-width:720px){nav.main{width:100%;margin-left:0;overflow-x:auto;flex-wrap:nowrap;padding-bottom:8px}nav.main a{white-space:nowrap}details.demo div{position:fixed;left:16px;right:16px;top:auto}}
+
+/* Buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:0;border-radius:14px;padding:13px 22px;font:inherit;font-weight:700;cursor:pointer;background:var(--cta);color:var(--cta-ink);text-decoration:none;min-height:46px;box-shadow:0 4px 0 rgba(23,18,46,.18);transition:transform .08s,filter .15s}
+.btn:hover{filter:brightness(1.06)}.btn:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(23,18,46,.18)}
+.btn:disabled{opacity:.4;cursor:not-allowed;box-shadow:none}
+.btn.brand{background:var(--brand);color:var(--brand-ink)}
+.btn.alt{background:var(--chip);color:var(--brand);box-shadow:none}
+.btn.ghost{background:transparent;border:1.5px solid var(--line);color:var(--ink);box-shadow:none}
+.btn.glass{background:rgba(255,255,255,.14);color:#fff;box-shadow:none}
+.btn.danger{background:var(--bad);color:#fff}
+.btn.big{padding:17px 30px;font-size:1.08rem;border-radius:16px}
+.btn.block{width:100%}
+
+/* Hero */
+.hero{background:radial-gradient(900px 500px at 85% 0%,var(--hero-c),transparent 60%),linear-gradient(160deg,var(--hero-a),var(--hero-b));color:#fff;overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:24px;align-items:center;padding-top:44px;padding-bottom:56px}
+.hero p.lead{color:#d9d3ff;font-size:1.1rem;max-width:46ch}
+.hero .gold{color:var(--gold)}
+.badge{display:inline-flex;gap:8px;align-items:center;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:6px 14px;font-weight:700;font-size:.82rem;margin-bottom:16px}
+.live{width:9px;height:9px;border-radius:50%;background:var(--cta);box-shadow:0 0 0 0 rgba(184,245,74,.7);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 10px rgba(184,245,74,0)}100%{box-shadow:0 0 0 0 rgba(184,245,74,0)}}
+.cd{display:flex;gap:10px;margin:20px 0}
+.cd div{background:var(--chip);border:1px solid var(--line);border-radius:14px;padding:10px 0;width:74px;text-align:center}
+.cd b{display:block;font-family:var(--display);font-size:1.7rem;line-height:1.1}
+.cd span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.hero .cd div{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.18)}
+.hero .cd span{color:#cfc8f5}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:8px}
+.prize{position:relative}
+.prize svg{width:100%;height:auto;filter:drop-shadow(0 20px 30px rgba(0,0,0,.35));animation:float 6s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.prize .tag{position:absolute;background:var(--surface);color:var(--ink);border-radius:14px;padding:8px 14px;font-weight:700;font-size:.85rem;box-shadow:var(--shadow)}
+.prize .t1{left:0;top:6%}.prize .t2{right:0;bottom:8%}
+.prize .note{position:absolute;left:0;bottom:-6px;font-size:.7rem;color:#bdb5ee}
+@media (max-width:860px){.hero .wrap{grid-template-columns:1fr;padding-top:28px}.prize{order:-1;max-width:420px;margin:0 auto}}
+
+/* Sections & cards */
+section.block{padding:44px 0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow)}
+.grid{display:grid;gap:16px}
+.g2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(230px,1fr))}
+.g4{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.chip{display:inline-block;background:var(--chip);color:var(--brand);border-radius:999px;padding:3px 11px;font-size:.8rem;font-weight:700}
+.chip.ok{color:var(--ok)}.chip.warn{color:var(--warn)}.chip.bad{color:var(--bad)}
+.kpi{font-family:var(--display);font-size:1.8rem;font-weight:800}
+.ico{width:46px;height:46px;border-radius:14px;background:var(--chip);color:var(--brand);display:grid;place-items:center;margin-bottom:12px}
+.ico svg{width:24px;height:24px}
+.progress{height:16px;background:var(--taken);border-radius:999px;position:relative}
+.progress.sm{height:10px}
+.progress i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--brand),var(--cta));transition:width .6s}
+.progress b{position:absolute;top:-6px;width:3px;height:28px;border-radius:2px;background:var(--ink)}
+.progress.sm b{top:-4px;height:18px}
+.trust{background:var(--surface);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.trust .wrap{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;padding-top:18px;padding-bottom:18px}
+.trust div{display:flex;gap:10px;align-items:center;font-weight:600;font-size:.92rem}
+.trust svg{width:26px;height:26px;color:var(--brand);flex:none}
+.how{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;counter-reset:s}
+.how .card{position:relative;padding-top:40px}
+.how .card:before{counter-increment:s;content:counter(s);position:absolute;top:-16px;left:20px;width:36px;height:36px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-family:var(--display);font-weight:800}
+.verify-teaser{background:linear-gradient(160deg,var(--hero-a),var(--hero-b));color:#fff;border-radius:24px;padding:32px;display:grid;grid-template-columns:1.1fr .9fr;gap:24px;align-items:center}
+.verify-teaser p{color:#d9d3ff}
+.hashbox{background:rgba(0,0,0,.35);border-radius:14px;padding:16px;font-family:ui-monospace,Consolas,monospace;font-size:.78rem;word-break:break-all;color:#cfc8f5}
+.hashbox b{color:var(--cta)}
+@media (max-width:760px){.verify-teaser{grid-template-columns:1fr;padding:22px}}
+details.faq{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px 16px;margin-bottom:10px}
+details.faq summary{cursor:pointer;font-weight:700;padding:14px 0;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details.faq summary::after{content:"+";color:var(--brand);font-size:1.3rem;line-height:1}
+details.faq[open] summary::after{content:"–"}
+details.faq p{color:var(--muted)}
+
+/* Contest cards */
+.cgrid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.ccard{display:block;background:var(--surface);border:1px solid var(--line);border-radius:20px;overflow:hidden;text-decoration:none;color:inherit;box-shadow:var(--shadow);transition:transform .12s}
+.ccard:hover{transform:translateY(-3px)}
+.ccard:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.art{background:linear-gradient(160deg,var(--hero-a),var(--hero-b));padding:14px 18px 6px;position:relative}
+.art svg{display:block;width:100%;height:auto;max-height:150px}
+.cbadge{position:absolute;top:10px;left:10px;background:var(--surface);color:var(--ink);border-radius:999px;font-size:.72rem;font-weight:800;padding:3px 10px}
+.cbadge.hot{background:var(--gold);color:#2b1d00}.cbadge.ok{background:var(--cta);color:var(--cta-ink)}.cbadge.bad{background:var(--bad);color:#fff}
+.cbody{padding:16px}
+.cbody h3{margin-bottom:4px}
+.chead{display:flex;gap:16px;align-items:center;margin-bottom:18px;flex-wrap:wrap}
+.chead .art{width:170px;border-radius:16px;padding:8px 10px 4px;flex:none}
+.chead h1{font-size:clamp(1.6rem,4.5vw,2.3rem);margin:4px 0}
+.tools{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.tools select{width:auto;margin:0}
+.winner{font-family:var(--display);font-weight:800;color:var(--gold);font-size:1.1rem}
+
+/* Pack cards */
+.packs{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(128px,1fr))}
+.pack{position:relative;border:2px solid var(--line);border-radius:18px;padding:18px 14px 14px;background:var(--surface);cursor:pointer;text-align:center;font:inherit;color:inherit;transition:transform .12s,border-color .12s}
+.pack:hover:not(:disabled){transform:translateY(-2px);border-color:var(--brand)}
+.pack:disabled{opacity:.45;cursor:not-allowed}
+.pack[aria-pressed="true"]{border-color:var(--brand);background:var(--chip);box-shadow:0 0 0 3px rgba(91,46,240,.18)}
+.pack .q{font-family:var(--display);font-size:2rem;font-weight:800;line-height:1}
+.pack .q small{display:block;font-size:.8rem;font-weight:600;color:var(--muted);font-family:var(--text)}
+.pack .pr{font-weight:700;margin-top:8px}
+.pack .sv{display:inline-block;margin-top:6px;background:var(--cta);color:var(--cta-ink);border-radius:999px;font-size:.72rem;font-weight:800;padding:2px 9px}
+.pack .pop{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gold);color:#2b1d00;font-size:.7rem;font-weight:800;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.seg{display:inline-flex;background:var(--chip);border-radius:14px;padding:4px}
+.seg button{border:0;background:transparent;color:var(--muted);padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;border-radius:11px;min-height:44px}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--brand);box-shadow:0 2px 8px rgba(0,0,0,.12)}
+.stubs{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.stub{position:relative;background:repeating-linear-gradient(135deg,rgba(255,255,255,.09) 0 2px,transparent 2px 10px),linear-gradient(135deg,var(--brand),#8a5cff);box-shadow:0 4px 12px rgba(91,46,240,.25);color:#fff;border-radius:12px;padding:10px 18px 10px 26px;font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:.04em;animation:pop .35s both}
+.stub:before{content:"";position:absolute;left:-7px;top:50%;width:14px;height:14px;margin-top:-7px;border-radius:50%;background:var(--surface)}
+.stub.empty{background:var(--taken);color:var(--muted);animation:none;border:2px dashed var(--line)}
+.stub button{margin-left:8px;border:0;background:rgba(255,255,255,.2);color:#fff;border-radius:50%;width:30px;height:30px;font-size:1.1rem;cursor:pointer;line-height:1}
+@keyframes pop{from{transform:scale(.6) rotate(-4deg);opacity:0}}
+.numgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:6px}
+.num{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 0;font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;min-height:42px}
+.num:hover:not(:disabled){border-color:var(--brand);color:var(--brand)}
+.num.sel{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:800}
+.num:disabled{background:var(--taken);color:var(--muted);text-decoration:line-through;cursor:not-allowed;opacity:.55}
+.pager{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:12px 0}
+.sticky-bar{position:sticky;bottom:0;background:var(--surface);border-top:1px solid var(--line);padding:12px 16px;box-shadow:0 -8px 24px rgba(42,21,144,.12);z-index:20}
+.sticky-bar .in{max-width:1120px;margin:0 auto;display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.sticky-bar .tot{font-family:var(--display);font-weight:800;font-size:1.25rem}
+
+/* Forms */
+label.f{display:block;font-weight:600;margin-bottom:14px}
+label.f span{display:block;font-size:.82rem;color:var(--muted);font-weight:500}
+input,select,textarea{width:100%;font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;min-height:48px;margin-top:4px}
+input:focus,select:focus,.btn:focus-visible,.num:focus-visible,.pack:focus-visible,summary:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+input[type=checkbox],input[type=radio]{width:auto;min-height:0;margin:0 10px 0 0;accent-color:var(--brand)}
+.err{color:var(--bad);font-size:.85rem;margin:-6px 0 10px}
+.stepper{display:flex;gap:6px;list-style:none;padding:0;margin:0 0 20px;font-weight:700;font-size:.85rem;flex-wrap:wrap}
+.stepper li{display:flex;align-items:center;gap:8px;color:var(--muted)}
+.stepper li b{width:26px;height:26px;border-radius:50%;background:var(--taken);display:grid;place-items:center}
+.stepper li.done,.stepper li.now{color:var(--ink)}
+.stepper li.done b{background:var(--ok);color:#fff}
+.stepper li.now b{background:var(--brand);color:var(--brand-ink)}
+.stepper li+li:before{content:"";width:22px;height:2px;background:var(--line);margin-right:2px}
+.paytiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.paytile{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:14px;padding:12px;cursor:pointer;font-weight:700;background:var(--surface)}
+.paytile:has(input:checked){border-color:var(--brand);background:var(--chip)}
+.paytile i{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:#fff;font-style:normal;font-size:.8rem;flex:none}
+.timer{display:inline-flex;gap:8px;align-items:center;background:var(--chip);color:var(--brand);border-radius:999px;padding:6px 14px;font-weight:800}
+
+/* Tables, tabs, boxes */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.tabs button{border:1.5px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 16px;border-radius:999px;font:inherit;font-weight:700;cursor:pointer;min-height:44px}
+.tabs button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:.82rem}
+.table-wrap{overflow-x:auto}
+code,.mono{font-family:ui-monospace,Consolas,monospace;font-size:.82rem;word-break:break-all}
+.box{background:var(--chip);border-radius:14px;padding:14px}
+.ok-box{border-left:5px solid var(--ok)}.warn-box{border-left:5px solid var(--warn)}.bad-box{border-left:5px solid var(--bad)}
+.steps{display:grid;gap:12px;counter-reset:s}
+.steps .st{display:flex;gap:14px;align-items:flex-start}
+.steps .st:before{counter-increment:s;content:counter(s);flex:none;width:32px;height:32px;border-radius:50%;background:var(--brand);color:var(--brand-ink);display:grid;place-items:center;font-weight:800}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips .chip{font-size:.95rem;padding:5px 12px}
+.flow{display:grid;gap:10px}.flow .node{border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:12px 14px}.flow .node b{display:block}.flow .arrow{text-align:center;color:var(--muted)}
+.qs li{margin-bottom:10px}
+.overlay{position:fixed;inset:0;background:rgba(14,10,36,.8);display:grid;justify-items:center;align-items:safe center;overflow-y:auto;z-index:50;padding:16px}
+.overlay .card{max-width:420px;width:100%;text-align:center}
+.spin{width:46px;height:46px;border:5px solid var(--line);border-top-color:var(--brand);border-radius:50%;margin:0 auto 12px;animation:sp 1s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.toast{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;z-index:60;font-weight:600;max-width:90vw}
+.celebrate{background:linear-gradient(160deg,var(--hero-a),var(--hero-b));color:#fff;border-radius:24px;padding:32px 24px;text-align:center}
+.celebrate .stubs{justify-content:center}
+.celebrate .stub{background:linear-gradient(135deg,var(--gold),#ffdf8a);color:#2b1d00}
+.celebrate .stub:before{background:var(--hero-b)}
+footer{padding:32px 0;color:var(--muted);font-size:.85rem;margin-top:24px}
+main:focus{outline:none}
+.two{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start}
+.two.co{grid-template-columns:minmax(0,1.3fr) minmax(0,1fr)}
+.sticky-aside{position:sticky;top:76px}
+@media (max-width:900px){.two,.two.co{grid-template-columns:minmax(0,1fr)}.sticky-aside{position:static}}
+@media (max-width:520px){.sticky-bar{padding:10px 12px}.sticky-bar .in{flex-wrap:nowrap;gap:8px}.sticky-bar .btn.big{padding:13px 16px;font-size:.95rem;white-space:nowrap}.sticky-bar .tot{font-size:1.1rem}.sticky-bar .small{font-size:.75rem}.chead .art{width:100%}}
+.ccard.star{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;border:2px solid var(--gold)}
+.ccard.star .art{display:flex;align-items:center}
+.ccard.star .cbody{padding:24px;display:flex;flex-direction:column;justify-content:center}
+.ccard.star .cbody h3{font-size:1.5rem}
+@media (max-width:700px){.ccard.star{grid-template-columns:1fr}}
+.starflag{display:inline-block;background:var(--gold);color:#2b1d00;font-weight:800;font-size:.75rem;padding:3px 12px;border-radius:999px;margin-bottom:8px;align-self:flex-start}
+.stats{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:16px;text-align:center}
+.stat b{display:block;font-family:var(--display);font-size:1.7rem;font-weight:800;color:var(--brand);line-height:1.2}
+.stat span{font-size:.82rem;color:var(--muted)}
+.hero .stat{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.2)}
+.hero .stat b{color:var(--gold)}
+.hero .stat span{color:#d9d3ff}
+.checks{list-style:none;padding:0;margin:0}
+.checks li{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.checks li:last-child{border:0}
+.gal{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.gal div{aspect-ratio:4/3;border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;color:var(--muted);font-size:.82rem;text-align:center;padding:8px}
+.plan{color:var(--ink)}.plan svg{display:block;width:100%;height:auto;max-width:520px;margin:0 auto}
+/* Ticket */
+.tkts{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.tkt{--stub:132px;position:relative;display:grid;grid-template-columns:minmax(0,1fr) var(--stub);border-radius:20px;overflow:hidden;color:#fff;
+  background:radial-gradient(420px 200px at 100% 0,rgba(255,197,61,.30),transparent 62%),radial-gradient(360px 220px at 0 100%,rgba(184,245,74,.20),transparent 60%),linear-gradient(135deg,#120a36,#2a1590 55%,#5b2ef0);
+  box-shadow:0 14px 30px rgba(42,21,144,.28);
+  -webkit-mask:radial-gradient(circle 12px at calc(100% - var(--stub)) 0,#0000 11px,#000 12px),radial-gradient(circle 12px at calc(100% - var(--stub)) 100%,#0000 11px,#000 12px);-webkit-mask-composite:source-in;
+  mask:radial-gradient(circle 12px at calc(100% - var(--stub)) 0,#0000 11px,#000 12px),radial-gradient(circle 12px at calc(100% - var(--stub)) 100%,#0000 11px,#000 12px);mask-composite:intersect}
+.tkt:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(135deg,rgba(255,255,255,.055) 0 2px,transparent 2px 14px);pointer-events:none}
+.tkt-art{position:absolute;right:calc(var(--stub) - 12px);bottom:-14px;width:58%;opacity:.2;pointer-events:none}
+.tkt-art svg{display:block;width:100%;height:auto;max-height:none}
+.tkt-main{position:relative;z-index:1;padding:18px 20px 16px;text-align:left}
+.tkt-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.tkt-brand{font-family:var(--display);font-weight:800;font-size:.95rem}
+.tkt-brand em{font-style:normal;color:var(--cta)}
+.tkt-tag{font-size:.65rem;letter-spacing:.18em;font-weight:800;color:var(--cta);border:1px solid rgba(184,245,74,.5);border-radius:999px;padding:2px 10px}
+.tkt-prize{margin-top:10px;font-weight:700;font-size:.95rem;color:#e6e1ff}
+.tkt-num{font-family:var(--display);font-weight:800;font-size:clamp(2.4rem,9vw,3.4rem);line-height:1.05;color:var(--gold);letter-spacing:.06em;text-shadow:0 3px 0 rgba(0,0,0,.25)}
+.tkt-num small{font-size:.35em;vertical-align:top;margin-right:6px;color:#fff;letter-spacing:0}
+.tkt-meta{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px}
+.tkt-meta small{display:block;font-size:.62rem;text-transform:uppercase;letter-spacing:.1em;color:#bdb5ee}
+.tkt-meta b{font-size:.85rem;overflow-wrap:anywhere}
+.tkt-stub{position:relative;z-index:1;border-left:2px dashed rgba(255,255,255,.45);background:rgba(0,0,0,.2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px}
+.tkt-stub b{font-family:var(--display);font-size:.95rem}
+.tkt-stub small{font-size:.62rem;letter-spacing:.12em;color:#bdb5ee}
+.tkt-code svg{display:block;width:84px;height:84px}
+@media (max-width:520px){.tkt{--stub:104px}.tkt-code svg{width:64px;height:64px}.tkt-main{padding:16px 14px 14px}}
+@media print{.tkt{break-inside:avoid;box-shadow:none;-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+.grid>*{min-width:0}
+.steps .st>div,.celebrate p,.box,td{min-width:0;overflow-wrap:anywhere}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+@media print{.demo-banner,header.top,.sticky-bar,footer,.noprint{display:none!important}body{background:#fff;color:#000}.card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="demo-banner" role="note">PROTOTIPO DE DEMOSTRACIÓN · Sin pagos reales, sin premios, datos ficticios · Para revisión de flujo y legal</div>
+<header class="top">
+  <div class="wrap">
+    <a class="logo" href="#/" aria-label="Inicio">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="7" width="28" height="18" rx="4" fill="#b8f54a"/><circle cx="2" cy="16" r="3.2" fill="#120a36"/><circle cx="30" cy="16" r="3.2" fill="#120a36"/><path d="M12 12h8M12 16h8M12 20h5" stroke="#120a36" stroke-width="2" stroke-linecap="round"/></svg>
+      Nombre<em>Provisorio</em>
+    </a>
+    <nav class="main" id="nav" aria-label="Principal">
+      <a href="#/" data-r="">Inicio</a>
+      <a href="#/sorteos" data-r="sorteos">Sorteos</a>
+      <a href="#/como" data-r="como">Cómo funciona</a>
+      <a href="#/verificar" data-r="verificar">Verificar sorteo</a>
+      <a href="#/mis-tickets" data-r="mis-tickets">Mis tickets</a>
+      <details class="demo"><summary>Modo demo ▾</summary><div><a href="#/admin">Panel interno</a><a href="#/legal">Revisión legal</a><a href="#/" data-reset>Reiniciar datos de demo</a></div></details>
+    </nav>
+  </div>
+</header>
+<main id="app" tabindex="-1"><noscript><div class="wrap block"><div class="card">Este prototipo necesita JavaScript activado.</div></div></noscript></main>
+<footer><div class="wrap">Prototipo estático (HTML/JS). Los datos se guardan solo en tu navegador. Ningún valor mostrado es real. Esto no es asesoría legal ni una oferta.</div></footer>
+
+<script>
+"use strict";
+/* ---------- Utilidades ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const clp = n => "$" + Number(n).toLocaleString("es-CL");
+const num = n => Number(n).toLocaleString("es-CL");
+const pad = n => String(n).padStart(4, "0");
+const mem = {};
+const store = {
+  get(k, d) {
+    try { const v = localStorage.getItem(k); if (v !== null) return JSON.parse(v); } catch (e) {}
+    return k in mem ? mem[k] : d;
+  },
+  set(k, v) { mem[k] = v; try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} },
+  remove(k) { delete mem[k]; try { localStorage.removeItem(k); } catch (e) {} }
+};
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+async function sha256(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+}
+function toast(msg) {
+  const t = document.createElement("div"); t.className = "toast"; t.setAttribute("role", "status"); t.textContent = msg;
+  document.body.appendChild(t); setTimeout(() => t.remove(), 2800);
+}
+function validRut(rut) {
+  const c = String(rut).replace(/[.\-\s]/g, "").toUpperCase();
+  if (!/^\d{7,8}[\dK]$/.test(c)) return false;
+  const body = c.slice(0, -1), dv = c.slice(-1);
+  let sum = 0, mul = 2;
+  for (let i = body.length - 1; i >= 0; i--) { sum += +body[i] * mul; mul = mul === 7 ? 2 : mul + 1; }
+  const r = 11 - (sum % 11), exp = r === 11 ? "0" : r === 10 ? "K" : String(r);
+  return dv === exp;
+}
+const normRut = r => String(r).replace(/[.\-\s]/g, "").toUpperCase();
+const randInt = max => crypto.getRandomValues(new Uint32Array(1))[0] % max;
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const strSeed = s => { let h = 2166136261; for (const ch of String(s)) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; };
+const fmtDate = (iso, o = { day: "numeric", month: "long" }) => new Date(iso).toLocaleDateString("es-CL", o);
+
+const ICON = {
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M9 12l2 2 4-4"/></svg>',
+  bolt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>',
+  undo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14L4 9l5-5"/><path d="M4 9h10a6 6 0 010 12h-3"/></svg>',
+  doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/></svg>',
+  ticket: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8a2 2 0 002-2h14a2 2 0 002 2v2a2 2 0 000 4v2a2 2 0 00-2 2H5a2 2 0 00-2-2v-2a2 2 0 000-4z"/><path d="M9 9v6" stroke-dasharray="2 2"/></svg>',
+  card: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3 10h18M7 15h4"/></svg>',
+  eye: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'
+};
+const SHADOW = '<ellipse cx="262" cy="266" rx="210" ry="14" fill="rgba(0,0,0,.35)"/>';
+const ART = {
+  car: `<svg viewBox="0 0 520 300" role="img" aria-label="Ilustración referencial: SUV"><defs><linearGradient id="cb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset="1" stop-color="#ffb020"/></linearGradient><linearGradient id="cg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#cfe9ff"/><stop offset="1" stop-color="#6aa6e8"/></linearGradient></defs>${SHADOW}
+<path d="M58 214 L66 172 Q76 150 108 146 L168 138 L212 94 Q224 84 246 84 L362 84 Q388 84 402 106 L432 146 L462 153 Q484 159 486 182 L488 212 Q488 224 474 224 L440 224 A39 39 0 0 0 362 224 L180 224 A39 39 0 0 0 102 224 L72 224 Q58 224 58 214Z" fill="url(#cb)"/>
+<path d="M186 140 L222 102 Q230 94 246 94 L292 94 L292 140Z" fill="url(#cg)"/><path d="M302 94 L360 94 Q376 94 386 110 L408 140 L302 140Z" fill="url(#cg)"/><rect x="294" y="94" width="6" height="46" fill="#e89a10"/>
+<path d="M60 190 h26 a8 8 0 0 1 8 8 v4 h-34z" fill="#fff6d6"/><path d="M470 176 h14 v18 h-14z" fill="#ff6b4a"/>
+<circle cx="141" cy="224" r="33" fill="#18123a"/><circle cx="141" cy="224" r="15" fill="#d9d3ff"/><circle cx="401" cy="224" r="33" fill="#18123a"/><circle cx="401" cy="224" r="15" fill="#d9d3ff"/></svg>`,
+  moto: `<svg viewBox="0 0 520 300" role="img" aria-label="Ilustración referencial: moto"><defs><linearGradient id="mb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff8a7a"/><stop offset="1" stop-color="#e8362a"/></linearGradient></defs>${SHADOW}
+<circle cx="130" cy="214" r="48" fill="none" stroke="#18123a" stroke-width="16"/><circle cx="130" cy="214" r="12" fill="#d9d3ff"/><circle cx="400" cy="214" r="48" fill="none" stroke="#18123a" stroke-width="16"/><circle cx="400" cy="214" r="12" fill="#d9d3ff"/>
+<path d="M130 214 L215 150 L330 150 L400 214" fill="none" stroke="#d9d3ff" stroke-width="10" stroke-linejoin="round"/>
+<path d="M210 140 Q250 90 330 112 L360 150 L210 150Z" fill="url(#mb)"/><rect x="170" y="128" width="80" height="16" rx="8" fill="#18123a"/>
+<path d="M368 104 L404 214" stroke="#d9d3ff" stroke-width="10" stroke-linecap="round"/><path d="M352 96 L392 90" stroke="#18123a" stroke-width="10" stroke-linecap="round"/><path d="M110 196 L190 176" stroke="#ffc53d" stroke-width="8" stroke-linecap="round"/></svg>`,
+  phone: `<svg viewBox="0 0 520 300" role="img" aria-label="Ilustración referencial: smartphone y notebook"><defs><linearGradient id="pg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7a5cff"/><stop offset="1" stop-color="#2ad1c9"/></linearGradient></defs>${SHADOW}
+<rect x="40" y="110" width="250" height="150" rx="12" fill="#2b2160"/><rect x="52" y="122" width="226" height="126" rx="6" fill="url(#pg)"/><path d="M20 262 H310 L296 276 H34Z" fill="#cfc8f5"/>
+<rect x="330" y="30" width="130" height="236" rx="24" fill="#18123a" stroke="#d9d3ff" stroke-width="4"/><rect x="340" y="46" width="110" height="196" rx="12" fill="url(#pg)"/><circle cx="395" cy="38" r="4" fill="#d9d3ff"/>
+<circle cx="395" cy="140" r="26" fill="rgba(255,255,255,.25)"/></svg>`,
+  cash: `<svg viewBox="0 0 520 300" role="img" aria-label="Ilustración referencial: dinero en efectivo"><defs><linearGradient id="gb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#b8f54a"/><stop offset="1" stop-color="#27b36a"/></linearGradient></defs>${SHADOW}
+<g transform="rotate(-9 260 150)"><rect x="90" y="70" width="300" height="140" rx="14" fill="url(#gb)" stroke="#0e6b3d" stroke-width="4"/><circle cx="240" cy="140" r="38" fill="rgba(255,255,255,.35)"/><text x="240" y="156" font-size="46" font-weight="800" text-anchor="middle" fill="#0e6b3d" font-family="Sora,sans-serif">$</text></g>
+<g transform="rotate(7 300 170)"><rect x="140" y="110" width="300" height="140" rx="14" fill="url(#gb)" stroke="#0e6b3d" stroke-width="4"/><circle cx="290" cy="180" r="38" fill="rgba(255,255,255,.35)"/><text x="290" y="196" font-size="46" font-weight="800" text-anchor="middle" fill="#0e6b3d" font-family="Sora,sans-serif">$</text></g>
+<circle cx="450" cy="244" r="26" fill="#ffc53d" stroke="#b8860b" stroke-width="4"/><circle cx="64" cy="246" r="22" fill="#ffc53d" stroke="#b8860b" stroke-width="4"/></svg>`,
+  scooter: `<svg viewBox="0 0 520 300" role="img" aria-label="Ilustración referencial: scooter eléctrico"><defs><linearGradient id="sb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7a5cff"/><stop offset="1" stop-color="#4b2fe0"/></linearGradient></defs>${SHADOW}
+<circle cx="120" cy="226" r="32" fill="#18123a"/><circle cx="120" cy="226" r="12" fill="#d9d3ff"/><circle cx="420" cy="226" r="32" fill="#18123a"/><circle cx="420" cy="226" r="12" fill="#d9d3ff"/>
+<rect x="110" y="186" width="320" height="22" rx="11" fill="url(#sb)"/><path d="M410 196 L380 60" stroke="#d9d3ff" stroke-width="12" stroke-linecap="round"/><path d="M350 52 L412 52" stroke="#18123a" stroke-width="12" stroke-linecap="round"/><path d="M130 200 L120 226" stroke="#d9d3ff" stroke-width="8" stroke-linecap="round"/></svg>`,
+  house: `<svg viewBox="0 0 520 300" role="img" aria-label="Ilustración referencial: casa en parcela"><defs><linearGradient id="hg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#58d68d"/><stop offset="1" stop-color="#1e8e5a"/></linearGradient><linearGradient id="hr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ff7a5c"/><stop offset="1" stop-color="#d9442a"/></linearGradient></defs>
+<ellipse cx="260" cy="262" rx="250" ry="32" fill="url(#hg)"/><path d="M10 262 Q140 222 270 240 T510 252 L510 272 L10 272Z" fill="#2fbf71" opacity=".55"/>
+<rect x="150" y="140" width="220" height="112" rx="4" fill="#fff3d6"/><path d="M128 146 L260 66 L392 146Z" fill="url(#hr)"/><rect x="326" y="86" width="22" height="46" fill="#b8553a"/>
+<rect x="244" y="184" width="32" height="68" rx="3" fill="#8a5a3c"/><circle cx="270" cy="220" r="2.5" fill="#ffd978"/>
+<rect x="172" y="168" width="52" height="42" rx="3" fill="#bfe3ff" stroke="#8a5a3c" stroke-width="3"/><path d="M198 168v42M172 189h52" stroke="#8a5a3c" stroke-width="2"/>
+<rect x="296" y="168" width="52" height="42" rx="3" fill="#bfe3ff" stroke="#8a5a3c" stroke-width="3"/><path d="M322 168v42M296 189h52" stroke="#8a5a3c" stroke-width="2"/>
+<rect x="84" y="196" width="10" height="56" fill="#7a4a2c"/><circle cx="89" cy="186" r="34" fill="#27ae60"/><circle cx="68" cy="204" r="22" fill="#2fbf71"/>
+<rect x="430" y="206" width="9" height="46" fill="#7a4a2c"/><circle cx="434" cy="196" r="28" fill="#27ae60"/>
+<path d="M20 252h40M20 244v16M40 244v16M60 244v16M450 252h50M450 244v16M470 244v16M490 244v16" stroke="#fff3d6" stroke-width="4" stroke-linecap="round"/></svg>`,
+  gift: `<svg viewBox="0 0 520 300" role="img" aria-label="Ilustración referencial: premio"><defs><linearGradient id="rb" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9a7bff"/><stop offset="1" stop-color="#5b2ef0"/></linearGradient></defs>${SHADOW}
+<rect x="150" y="130" width="220" height="130" rx="10" fill="url(#rb)"/><rect x="130" y="100" width="260" height="46" rx="10" fill="#7a5cff"/><rect x="242" y="100" width="36" height="160" fill="#ffc53d"/>
+<path d="M260 100 C210 40 150 60 190 100 Z" fill="#ffc53d"/><path d="M260 100 C310 40 370 60 330 100 Z" fill="#ffd978"/></svg>`
+};
+
+/* ---------- Datos de demostración ---------- */
+const mkPacks = price => [[1, 0], [5, 10], [10, 20], [20, 30]].map(([q, d]) => ({ q, price: Math.round(price * q * (100 - d) / 100 / 10) * 10 }));
+const BEACON0 = "a3f1c9e07b52d4486e1f0b9c2d7a85133c64e9b0f7a21d58ce3b60947d1a8f25";
+const RAW = [
+  { id: "parcela", star: true, featured: true, name: "Casa de 200 m² en parcela de 5.000 m² (premio de ejemplo)", short: "Casa 200 m² + parcela 5.000 m²", headline: "Gana una casa de 200 m² en una parcela de 5.000 m²", art: "house", total: 12000, minSold: 9000, price: 10000, drawDate: "2026-12-19T20:00:00-03:00", ratio: 0.41, seedN: 55, status: "active", facts: { casa: 200, terreno: 5000 },
+    commit: "7362b7dc2a475839ded1afae81122460dfdf8acf3528b2143a4647a210dacc2c", demoSeed: "SEMILLA-DEMO-PARCELA", demoBeacon: "975276d7ab0ff056f923f76b33a2335922ef739d707c8c75de02a8b6b2855180", demoTotal: 9400 },
+  { id: "suv", name: "SUV 0 km (premio de ejemplo)", short: "SUV 0 km", art: "car", total: 8000, minSold: 6000, price: 5000, drawDate: "2026-11-28T20:00:00-03:00", ratio: 0.62, seedN: 20261128, status: "active",
+    commit: "6c99aa7326b7a7b3f5e8b8485fcb740e78839618097ce0c4ae0133b7ffd6d2e6", demoSeed: "SEMILLA-DEMO-2026-OCT", demoBeacon: BEACON0, demoTotal: 6850 },
+  { id: "moto", name: "Moto 0 km (premio de ejemplo)", short: "Moto 0 km", art: "moto", total: 3000, minSold: 2000, price: 3000, drawDate: "2026-11-14T20:00:00-03:00", ratio: 0.88, seedN: 11, status: "active",
+    commit: "3a2dd1a5b4235fc4651a1086bf7fdfee8c6f2d6f5a29749f7e38abb219eb9e2f", demoSeed: "SEMILLA-DEMO-MOTO", demoBeacon: "40237bfb12b0461b0ec9c4fb79b52aa34a4c9b5c9518c9aab04b8633980acab8", demoTotal: 2450 },
+  { id: "tech", name: "Pack tecnología: smartphone + notebook (ejemplo)", short: "Smartphone + notebook", art: "phone", total: 2500, minSold: 1500, price: 2000, drawDate: "2026-10-24T20:00:00-03:00", ratio: 0.58, seedN: 22, status: "active",
+    commit: "3b34e4ef08893be19d2f37caea64bcef504d5564574fc6fa31ca52da3d5243e5", demoSeed: "SEMILLA-DEMO-TECH", demoBeacon: "550d91df2995af3df4782df103caff95b23b3bdd65a051546abf1d9c2764ef7b", demoTotal: 2100 },
+  { id: "cash", name: "$2.000.000 en efectivo (ejemplo)", short: "$2.000.000 en efectivo", art: "cash", total: 6000, minSold: 3500, price: 1000, drawDate: "2026-12-12T20:00:00-03:00", ratio: 0.31, seedN: 33, status: "active",
+    commit: "dcfee9a4c122c0fccd712d18d72004030918793c461825c760096eea0957d517", demoSeed: "SEMILLA-DEMO-CASH", demoBeacon: "955168c4d7607ef92e40a4df4ebc5bbde80e9ed249bb8c479b76f7b3f0590431", demoTotal: 5200 },
+  { id: "scooter", name: "Scooter eléctrico (sorteo anterior, ejemplo)", short: "Scooter eléctrico", art: "scooter", total: 3000, minSold: 2000, price: 2500, drawDate: "2026-09-26T20:00:00-03:00", ratio: 1, seedN: 44, status: "finished", winner: 1774,
+    commit: "612dc8fd0970183afc029355a57acd8e3145a36676393dba7194d80bfb6e0259", demoSeed: "SEMILLA-DEMO-SCOOTER", demoBeacon: "e332c02eb390f89bcb157bf075927b91a77497167cef539fc1e296f15a318b9a", demoTotal: 3000 }
+].map(c => ({ ...c, packs: mkPacks(c.price) }));
+
+function customContests() {
+  const a = store.get("contests", []);
+  return Array.isArray(a) ? a.filter(c => c && typeof c.id === "string" && c.total > 0 && c.price > 0 && c.drawDate).map(c => ({ ...c, packs: mkPacks(c.price), custom: true })) : [];
+}
+function allContests() {
+  const d = store.get("draws", {}), draws = d && typeof d === "object" ? d : {};
+  return [...RAW, ...customContests()].map(c => draws[c.id] && c.status !== "finished" ? { ...c, status: "finished", winner: draws[c.id].winner } : c);
+}
+const getContest = id => allContests().find(c => c.id === id);
+const activeContests = () => allContests().filter(c => c.status === "active");
+let C = RAW[0];
+function useContest(id) { C = getContest(id) || activeContests()[0] || RAW[0]; return C; }
+
+const baseCache = {};
+function baseSoldOf(c) {
+  if (baseCache[c.id]) return baseCache[c.id];
+  const s = new Set();
+  if (c.ratio > 0) { const r = mulberry32(c.seedN || strSeed(c.id)); for (let n = 1; n <= c.total; n++) if (r() < c.ratio) s.add(n); }
+  return (baseCache[c.id] = s);
+}
+const orders = () => {
+  const o = store.get("orders", []);
+  return Array.isArray(o) ? o.filter(x => x && typeof x.id === "string" && Array.isArray(x.numbers)) : [];
+};
+function soldSet(c = C) {
+  const s = new Set(baseSoldOf(c));
+  orders().forEach(o => { if ((o.cid || "suv") === c.id) o.numbers.forEach(n => s.add(n)); });
+  return s;
+}
+const blankSel = cid => ({ cid, q: 10, mode: "azar", numbers: [], page: 0, reservedAt: null });
+let sel = blankSel(null);
+const packOf = q => C.packs.find(p => p.q === q);
+const savePct = p => Math.round((1 - p.price / (p.q * C.price)) * 100);
+function rollRandom(q) {
+  const sold = soldSet(), out = [];
+  let guard = 0;
+  while (out.length < q && guard++ < 50000) { const n = 1 + randInt(C.total); if (!sold.has(n) && !out.includes(n)) out.push(n); }
+  return out.sort((a, b) => a - b);
+}
+async function winnerOf(c) { const h = await sha256(`${c.demoSeed}:${c.demoBeacon}:${c.demoTotal}`); return (BigInt("0x" + h) % BigInt(c.demoTotal) + 1n).toString(); }
+
+function countdownHTML() {
+  return `<div class="cd" data-cd role="timer" aria-label="Tiempo para el sorteo"><div><b data-u="d">--</b><span>días</span></div><div><b data-u="h">--</b><span>horas</span></div><div><b data-u="m">--</b><span>min</span></div><div><b data-u="s">--</b><span>seg</span></div></div>`;
+}
+let cdTimer = null;
+function startCountdown() {
+  clearInterval(cdTimer);
+  const tick = () => {
+    const els = $$("[data-cd]"); if (!els.length) return clearInterval(cdTimer);
+    const s = Math.max(0, Math.floor((new Date(C.drawDate) - Date.now()) / 1000));
+    const v = { d: Math.floor(s / 86400), h: Math.floor(s % 86400 / 3600), m: Math.floor(s % 3600 / 60), s: s % 60 };
+    els.forEach(el => Object.entries(v).forEach(([k, x]) => { const n = $(`[data-u=${k}]`, el); if (n) n.textContent = String(x).padStart(2, "0"); }));
+  };
+  tick(); cdTimer = setInterval(tick, 1000);
+}
+function progressHTML(c = C) {
+  const soldN = soldSet(c).size, pct = Math.round(soldN / c.total * 100), minPct = Math.round(c.minSold / c.total * 100);
+  const reached = soldN >= c.minSold;
+  return `<div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;margin-bottom:14px"><b>${num(soldN)} tickets vendidos</b><span class="muted small">de ${num(c.total)} · sorteo asegurado desde ${num(c.minSold)}</span></div>
+  <div class="progress" role="img" aria-label="${pct}% vendido; meta mínima al ${minPct}%"><i style="width:${pct}%"></i><b style="left:${minPct}%"></b></div>
+  <p class="small muted" style="margin:10px 0 0">${reached ? "✓ Meta alcanzada: el sorteo está asegurado." : "Faltan <b>" + num(c.minSold - soldN) + "</b> tickets para asegurar el sorteo. Si no se alcanza, devolvemos el 100%."}</p>`;
+}
+function cardHTML(c) {
+  const s = soldSet(c).size, pct = Math.min(100, Math.round(s / c.total * 100)), minPct = Math.round(c.minSold / c.total * 100);
+  const days = Math.ceil((new Date(c.drawDate) - Date.now()) / 864e5), fin = c.status === "finished", left = c.total - s;
+  const badge = fin ? '<span class="cbadge">Finalizado</span>' : left <= 0 ? '<span class="cbadge bad">Agotado</span>' : pct >= 85 ? '<span class="cbadge hot">🔥 Últimos tickets</span>' : s >= c.minSold ? '<span class="cbadge ok">✓ Sorteo asegurado</span>' : "";
+  const when = fin ? "Sorteado el " + fmtDate(c.drawDate) : days > 0 ? "Sorteo en " + days + " día" + (days > 1 ? "s" : "") : "Sorteo hoy";
+  return `<a class="ccard${c.star ? " star" : ""}" href="#/concurso?c=${encodeURIComponent(c.id)}"><div class="art">${ART[c.art] || ART.gift}${badge}</div>
+    <div class="cbody">${c.star ? '<span class="starflag">⭐ Sorteo estrella</span>' : ""}<h3>${esc(c.short)}</h3>${c.facts ? `<p class="small" style="margin:0 0 6px"><b>${num(c.facts.casa)} m²</b> construidos · <b>${num(c.facts.terreno)} m²</b> de terreno</p>` : ""}<p class="muted small" style="margin-bottom:10px">Ticket desde ${clp(c.price)} · ${when}</p>
+    ${fin ? `<p style="margin:0 0 12px"><span class="winner" style="color:var(--brand)">Ganador: N° ${pad(c.winner)}</span></p>` : `<div class="progress sm" style="margin:6px 0 8px"><i style="width:${pct}%"></i><b style="left:${minPct}%"></b></div><p class="small muted" style="margin:0 0 12px">${num(s)} de ${num(c.total)} vendidos</p>`}
+    <span class="btn block">${fin ? "Ver resultado" : left <= 0 ? "Ver detalle" : "Quiero mi ticket"}</span></div></a>`;
+}
+function statsHTML(c, style = "") {
+  return `<div class="stats" style="${style}"><div class="stat"><b>${num(c.facts.casa)} m²</b><span>casa construida</span></div><div class="stat"><b>${num(c.facts.terreno)} m²</b><span>de terreno</span></div></div>`;
+}
+function fichaHTML(c) {
+  const docs = ["Certificado de dominio vigente (quién es el dueño)", "Certificado de hipotecas, gravámenes y prohibiciones (debe salir libre)", "Rol de avalúo y avalúo fiscal (SII)", "Tasación comercial independiente", "Planos y recepción final de la casa", "Estudio de títulos firmado por el abogado"];
+  return `<div id="ficha" style="margin-top:44px"><h2>Ficha del premio</h2>
+  <div class="stats"><div class="stat"><b>${num(c.facts.casa)} m²</b><span>casa construida</span></div><div class="stat"><b>${num(c.facts.terreno)} m²</b><span>de terreno</span></div><div class="stat"><b>${(c.facts.terreno / 10000).toLocaleString("es-CL")} há</b><span>equivalente del terreno</span></div><div class="stat"><b style="font-size:1.2rem;line-height:2">Por definir</b><span>ubicación y valor (ejemplo)</span></div></div>
+  <div class="grid g2" style="margin-top:16px">
+    <div class="card"><h3>Casa y terreno, a escala</h3>
+      <div class="plan"><svg viewBox="0 0 420 240" role="img" aria-label="Esquema: casa de ${c.facts.casa} metros cuadrados dentro de un terreno de ${c.facts.terreno} metros cuadrados"><rect x="10" y="40" width="400" height="180" rx="8" fill="#2fbf71" fill-opacity=".22" stroke="#2fbf71" stroke-width="3" stroke-dasharray="8 5"/><rect x="170" y="110" width="80" height="40" rx="3" fill="#ffc53d" stroke="#b8860b" stroke-width="2"/><text x="210" y="135" font-size="12" font-weight="700" text-anchor="middle" fill="#2b1d00">Casa ${num(c.facts.casa)} m²</text><text x="210" y="28" font-size="13" font-weight="700" text-anchor="middle" fill="currentColor">Terreno ${num(c.facts.terreno)} m²</text><text x="210" y="236" font-size="10" text-anchor="middle" fill="currentColor" opacity=".7">Superficies en proporción; forma y ubicación son referenciales</text></svg></div>
+      <p class="small muted" style="margin:10px 0 0">La casa ocupa cerca del 4% del terreno. El plano real se publicará con la documentación.</p></div>
+    <div class="card"><h3>Qué incluye el premio</h3><ul class="checks">
+      <li><span>✓</span><span>Casa construida de ${num(c.facts.casa)} m²</span></li>
+      <li><span>✓</span><span>Terreno de ${num(c.facts.terreno)} m²</span></li>
+      <li><span>◔</span><span>Escritura e inscripción a nombre del ganador</span><span class="chip warn">A definir en las bases</span></li>
+      <li><span>◔</span><span>Gastos notariales, impuestos y contribuciones</span><span class="chip warn">A definir en las bases</span></li></ul></div>
+  </div>
+  <div class="card" style="margin-top:16px"><h3>Documentación que se publicará antes de abrir ventas</h3>
+    <ul class="checks">${docs.map(d => `<li><span>☐</span><span>${d}</span><span class="chip warn">Pendiente (demo)</span></li>`).join("")}</ul>
+    <p class="small muted" style="margin:10px 0 0">Compra con respaldo: cualquiera podrá revisar estos documentos antes de pagar.</p></div>
+  <div class="card" style="margin-top:16px"><h3>Galería</h3><div class="gal">${["Exterior de la casa", "Living y cocina", "Dormitorios", "Terreno y entorno", "Acceso y cierre", "Vista aérea"].map(t => `<div>${t}<br>(foto por incorporar)</div>`).join("")}</div></div></div>`;
+}
+/* ---------- Ticket visual y correo ---------- */
+function codeSVG(seed, px = 84) {
+  const r = mulberry32(strSeed(seed)), N = 17, m = px / N, T = px + 8;
+  const inFinder = (x, y) => (x < 5 && y < 5) || (x >= N - 5 && y < 5) || (x < 5 && y >= N - 5);
+  let d = "";
+  for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) {
+    let on;
+    if (inFinder(x, y)) {
+      const lx = x < 5 ? x : x - (N - 5), ly = y < 5 ? y : y - (N - 5);
+      on = lx === 0 || lx === 4 || ly === 0 || ly === 4 || (lx === 2 && ly === 2);
+    } else on = r() > 0.5;
+    if (on) d += `M${(x * m).toFixed(2)} ${(y * m).toFixed(2)}h${m.toFixed(2)}v${m.toFixed(2)}h-${m.toFixed(2)}z`;
+  }
+  return `<svg viewBox="0 0 ${T} ${T}" role="img" aria-label="Código decorativo del ticket"><rect width="${T}" height="${T}" rx="8" fill="#fff"/><path transform="translate(4 4)" d="${d}" fill="#17122e"/></svg>`;
+}
+function ticketHTML(o, c, n) {
+  const seed = (o.receipt || o.id) + ":" + n, short = strSeed(seed).toString(16).toUpperCase().padStart(8, "0");
+  const art = c ? ART[c.art] || ART.gift : ART.gift;
+  return `<article class="tkt" aria-label="Ticket número ${n}">
+    <div class="tkt-art" aria-hidden="true">${art}</div>
+    <div class="tkt-main">
+      <div class="tkt-top"><span class="tkt-brand">Nombre<em>Provisorio</em></span><span class="tkt-tag">TICKET DIGITAL</span></div>
+      <div class="tkt-prize">${esc(c ? c.short : o.cname || "Sorteo")}</div>
+      <div class="tkt-num"><small>N°</small>${pad(n)}</div>
+      <div class="tkt-meta"><div><small>Sorteo</small><b>${c ? fmtDate(c.drawDate, { day: "numeric", month: "short", year: "numeric" }) : "—"}</b></div><div><small>Titular</small><b>${esc(o.nombre.split(" ")[0])}</b></div><div><small>Pedido</small><b>${esc(o.id)}</b></div></div>
+    </div>
+    <div class="tkt-stub"><div class="tkt-code">${codeSVG(seed, 76)}</div><b>N° ${pad(n)}</b><small>${short}</small></div>
+  </article>`;
+}
+function svgImage(svg, w, h) {
+  return new Promise((res, rej) => {
+    const s = svg.replace("<svg ", `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" `);
+    const im = new Image(); im.onload = () => res(im); im.onerror = rej;
+    im.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(s);
+  });
+}
+function rrPath(g, x, y, w, h, r) {
+  g.beginPath(); g.moveTo(x + r, y); g.arcTo(x + w, y, x + w, y + h, r); g.arcTo(x + w, y + h, x, y + h, r); g.arcTo(x, y + h, x, y, r); g.arcTo(x, y, x + w, y, r); g.closePath();
+}
+async function ticketPNG(o, c, n) {
+  try { await Promise.all([document.fonts.load("800 80px Sora"), document.fonts.load("700 30px Inter")]); } catch (e) {}
+  const W = 1120, H = 400, S = 300, x0 = W - S, D = "Sora, Arial, sans-serif", T = "Inter, Arial, sans-serif";
+  const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+  const g = cv.getContext("2d"), seed = (o.receipt || o.id) + ":" + n, short = strSeed(seed).toString(16).toUpperCase().padStart(8, "0");
+  g.fillStyle = "#fff"; g.fillRect(0, 0, W, H); rrPath(g, 0, 0, W, H, 40); g.clip();
+  let gr = g.createLinearGradient(0, 0, W, H); gr.addColorStop(0, "#120a36"); gr.addColorStop(.55, "#2a1590"); gr.addColorStop(1, "#5b2ef0"); g.fillStyle = gr; g.fillRect(0, 0, W, H);
+  let rg = g.createRadialGradient(W, 0, 0, W, 0, 520); rg.addColorStop(0, "rgba(255,197,61,.32)"); rg.addColorStop(1, "rgba(255,197,61,0)"); g.fillStyle = rg; g.fillRect(0, 0, W, H);
+  rg = g.createRadialGradient(0, H, 0, 0, H, 460); rg.addColorStop(0, "rgba(184,245,74,.22)"); rg.addColorStop(1, "rgba(184,245,74,0)"); g.fillStyle = rg; g.fillRect(0, 0, W, H);
+  g.strokeStyle = "rgba(255,255,255,.055)"; g.lineWidth = 3;
+  for (let k = -H; k < W; k += 22) { g.beginPath(); g.moveTo(k, H); g.lineTo(k + H, 0); g.stroke(); }
+  try { const art = await svgImage(c ? ART[c.art] || ART.gift : ART.gift, 620, 358); g.globalAlpha = .2; g.drawImage(art, x0 - 600, H - 330, 620, 358); g.globalAlpha = 1; } catch (e) {}
+  g.fillStyle = "rgba(0,0,0,.22)"; g.fillRect(x0, 0, S, H);
+  g.textBaseline = "alphabetic"; g.textAlign = "left";
+  g.font = "800 36px " + D; g.fillStyle = "#fff"; g.fillText("Nombre", 44, 76);
+  const bw = g.measureText("Nombre").width; g.fillStyle = "#b8f54a"; g.fillText("Provisorio", 44 + bw, 76);
+  g.font = "800 20px " + T; g.letterSpacing = "4px"; const tag = "TICKET DIGITAL", tw = g.measureText(tag).width, px = x0 - 44 - (tw + 40);
+  rrPath(g, px, 42, tw + 40, 44, 22); g.strokeStyle = "rgba(184,245,74,.6)"; g.lineWidth = 3; g.stroke(); g.fillStyle = "#b8f54a"; g.fillText(tag, px + 22, 72); g.letterSpacing = "0px";
+  g.font = "700 32px " + T; g.fillStyle = "#e6e1ff"; let prize = c ? c.short : o.cname || "Sorteo";
+  while (g.measureText(prize).width > x0 - 90 && prize.length > 4) prize = prize.slice(0, -2) + "…";
+  g.fillText(prize, 44, 140);
+  g.font = "700 40px " + D; g.fillStyle = "#fff"; g.fillText("N°", 44, 212);
+  g.font = "800 132px " + D; g.letterSpacing = "6px"; g.fillStyle = "rgba(0,0,0,.28)"; g.fillText(pad(n), 128, 266); g.fillStyle = "#ffc53d"; g.fillText(pad(n), 124, 262); g.letterSpacing = "0px";
+  const first = String(o.nombre || "").split(" ")[0].slice(0, 14), when = c ? fmtDate(c.drawDate, { day: "numeric", month: "short", year: "numeric" }) : "—";
+  [["SORTEO", when, 44], ["TITULAR", first, 330], ["PEDIDO", o.id, 560]].forEach(([l, v, x]) => {
+    g.font = "600 18px " + T; g.letterSpacing = "2px"; g.fillStyle = "#bdb5ee"; g.fillText(l, x, 322); g.letterSpacing = "0px"; g.font = "700 28px " + T; g.fillStyle = "#fff"; g.fillText(v, x, 358);
+  });
+  g.setLineDash([14, 10]); g.strokeStyle = "rgba(255,255,255,.5)"; g.lineWidth = 4; g.beginPath(); g.moveTo(x0, 36); g.lineTo(x0, H - 36); g.stroke(); g.setLineDash([]);
+  try { const code = await svgImage(codeSVG(seed, 76), 190, 190); g.drawImage(code, x0 + (S - 190) / 2, 52, 190, 190); } catch (e) {}
+  g.textAlign = "center"; g.font = "800 34px " + D; g.fillStyle = "#fff"; g.fillText("N° " + pad(n), x0 + S / 2, 296);
+  g.font = "600 22px " + T; g.letterSpacing = "3px"; g.fillStyle = "#bdb5ee"; g.fillText(short, x0 + S / 2, 342); g.letterSpacing = "0px";
+  g.fillStyle = "#fff"; g.beginPath(); g.arc(x0, 0, 30, 0, 7); g.fill(); g.beginPath(); g.arc(x0, H, 30, 0, 7); g.fill();
+  return cv.toDataURL("image/jpeg", 0.88);
+}
+const emailCache = {};
+async function buildEmail(o, c, mode) {
+  const name = c ? c.short : o.cname || "el sorteo";
+  const when = c ? fmtDate(c.drawDate, { day: "numeric", month: "long", year: "numeric" }) : "";
+  const link = location.href.split("#")[0] + "#/ticket?id=" + encodeURIComponent(o.id);
+  const shown = o.numbers.slice(0, 4), more = o.numbers.length - shown.length, F = "font-family:Arial,Helvetica,sans-serif";
+  const imgs = emailCache[o.id] || (emailCache[o.id] = await Promise.all(shown.map(n => ticketPNG(o, c, n))));
+  const cid = n => "t" + pad(n) + "@nombreprovisorio";
+  const rows = shown.map((n, i) => `<tr><td style="padding:0 0 14px 0"><img src="${mode === "cid" ? "cid:" + cid(n) : imgs[i]}" width="560" alt="Ticket N° ${pad(n)} · ${esc(name)}" style="display:block;width:100%;max-width:560px;height:auto;border:0"></td></tr>`).join("");
+  const body = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="padding:16px 8px">
+  <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px">
+    <tr><td style="padding:4px 0 14px 0;${F}"><font color="#5b2ef0" size="5"><b>Nombre</b></font><font color="#17122e" size="5"><b>Provisorio</b></font></td></tr>
+    <tr><td style="padding:0 0 6px 0;${F}"><font color="#1a1238" size="6"><b>¡Estás dentro, ${esc(o.nombre.split(" ")[0])}!</b></font></td></tr>
+    <tr><td style="padding:0 0 18px 0;${F};line-height:22px"><font color="#4a4570" size="3">Tu pago fue aprobado. Estos son tus ${o.numbers.length} ticket${o.numbers.length > 1 ? "s" : ""} para el sorteo de <b>${esc(name)}</b>${when ? ", que se realiza el <b>" + esc(when) + "</b>" : ""}.</font></td></tr>
+    ${rows}
+    ${more > 0 ? `<tr><td style="padding:0 0 14px 0;${F}"><font color="#4a4570" size="3">…y ${more} ticket${more > 1 ? "s" : ""} más en tu cuenta.</font></td></tr>` : ""}
+    <tr><td style="padding:6px 0 22px 0"><table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#b8f54a" style="background-color:#b8f54a;border-radius:12px;padding:14px 28px"><a href="${esc(link)}" style="${F};font-weight:bold;font-size:16px;color:#17122e;text-decoration:none"><font color="#17122e"><b>Ver mis tickets</b></font></a></td></tr></table></td></tr>
+    <tr><td style="padding:14px 0 0 0;border-top:1px solid #d9d3f2;${F};line-height:18px"><font color="#6a6590" size="2">Pedido <b>${esc(o.id)}</b> · Total ${clp(o.total)}<br>Comprobante: ${esc((o.receipt || "").slice(0, 32))}…<br>Puedes verificar el resultado del sorteo en el sitio, cuando se realice.<br><br><b>Correo de demostración:</b> este prototipo no cobra ni entrega premios reales.</font></td></tr>
+  </table></td></tr></table>`;
+  return {
+    name, subject: `Tus tickets para ${name} (${o.id})`, body,
+    images: shown.map((n, i) => ({ n: pad(n), cid: cid(n), dataUrl: imgs[i] })),
+    html: `<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light only"><title>${esc("Tus tickets para " + name)}</title></head><body style="margin:0;padding:0;background-color:#ffffff">${body}</body></html>`
+  };
+}
+async function emlText(o, c) {
+  const p = await buildEmail(o, c, "cid"), b64 = s => btoa(unescape(encodeURIComponent(s))), wrap = s => s.replace(/(.{76})/g, "$1\r\n"), B = "----=_NP_" + Date.now().toString(36);
+  const parts = [`--${B}`, 'Content-Type: text/html; charset="utf-8"', "Content-Transfer-Encoding: base64", "", wrap(b64(p.html))];
+  p.images.forEach(im => parts.push(`--${B}`, `Content-Type: image/jpeg; name="ticket-${im.n}.jpg"`, "Content-Transfer-Encoding: base64", `Content-ID: <${im.cid}>`, `Content-Disposition: inline; filename="ticket-${im.n}.jpg"`, "", wrap(im.dataUrl.split(",")[1])));
+  parts.push(`--${B}--`, "");
+  return ["From: NombreProvisorio <no-responder@ejemplo.invalid>", "To: " + o.email, "Subject: =?UTF-8?B?" + b64(p.subject) + "?=", "X-Unsent: 1", "MIME-Version: 1.0", `Content-Type: multipart/related; type="text/html"; boundary="${B}"`, "", ...parts].join("\r\n");
+}
+async function copyHtml(html, text) {
+  try { await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([text], { type: "text/plain" }) })]); return true; } catch (e) {}
+  const d = document.createElement("div"); d.contentEditable = "true"; d.style.cssText = "position:fixed;left:-9999px;top:0"; d.innerHTML = html; document.body.appendChild(d);
+  const r = document.createRange(); r.selectNodeContents(d); const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+  let ok = false; try { ok = document.execCommand("copy"); } catch (e) {}
+  s.removeAllRanges(); d.remove(); return ok;
+}
+async function showEmail(o, c) {
+  const ov = document.createElement("div");
+  ov.className = "overlay"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "Vista previa del correo");
+  ov.innerHTML = `<div class="card" style="max-width:680px;width:100%;display:flex;flex-direction:column;text-align:left">
+    <div style="display:flex;justify-content:space-between;gap:8px;align-items:center;flex-wrap:wrap"><h3 style="margin:0">Correo de confirmación</h3><button class="btn ghost" data-close>Cerrar</button></div>
+    <p class="small muted" style="margin:6px 0 10px" id="mailHead"><b>Para:</b> ${esc(o.email)}<br>Generando el correo…</p>
+    <iframe title="Vista previa del correo" sandbox style="flex:1;min-height:380px;border:1px solid var(--line);border-radius:12px;background:#fff;width:100%"></iframe>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><button class="btn" data-copy disabled>Copiar correo (para pegar en Outlook)</button><button class="btn alt" data-eml disabled>Descargar .eml</button></div>
+    <p class="small muted" style="margin:10px 0 0">Este prototipo no envía correos reales. Para probar cómo se ve en tu bandeja: copia el correo y pégalo en un mensaje nuevo, o abre el .eml en Outlook (se abre como borrador listo para enviar).</p></div>`;
+  document.body.appendChild(ov);
+  const close = () => ov.remove();
+  ov.addEventListener("keydown", e => { if (e.key === "Escape") close(); });
+  $("[data-close]", ov).focus();
+  let p;
+  try { p = await buildEmail(o, c, "data"); } catch (err) { console.error(err); $("#mailHead", ov).innerHTML += "<br>No se pudo generar el correo."; return; }
+  if (!ov.isConnected) return;
+  $("#mailHead", ov).innerHTML = `<b>Para:</b> ${esc(o.email)}<br><b>Asunto:</b> ${esc(p.subject)}`;
+  $("iframe", ov).srcdoc = p.html;
+  $("[data-copy]", ov).disabled = false; $("[data-eml]", ov).disabled = false;
+  ov.addEventListener("click", async e => {
+    if (e.target === ov || e.target.closest("[data-close]")) return close();
+    if (e.target.closest("[data-copy]")) toast((await copyHtml(p.body, p.subject)) ? "Correo copiado. Pégalo en un mensaje nuevo." : "No se pudo copiar. Usa el .eml.");
+    if (e.target.closest("[data-eml]")) {
+      const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([await emlText(o, c)], { type: "message/rfc822" })); a.download = "tickets-" + o.id + ".eml"; document.body.appendChild(a); a.click(); a.remove();
+    }
+  });
+}
+function confetti() {
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const c = document.createElement("canvas"); c.style.cssText = "position:fixed;inset:0;pointer-events:none;z-index:70"; c.width = innerWidth; c.height = innerHeight;
+  document.body.appendChild(c); const x = c.getContext("2d"), cols = ["#b8f54a", "#ffc53d", "#9a7bff", "#ffffff", "#ff6b9a"];
+  const ps = Array.from({ length: 140 }, () => ({ x: Math.random() * c.width, y: -20 - Math.random() * c.height * .5, vx: (Math.random() - .5) * 3, vy: 2 + Math.random() * 4, s: 6 + Math.random() * 6, r: Math.random() * 6, vr: (Math.random() - .5) * .3, c: cols[Math.random() * cols.length | 0] }));
+  let t = 0;
+  (function f() { x.clearRect(0, 0, c.width, c.height); ps.forEach(p => { p.x += p.vx; p.y += p.vy; p.r += p.vr; x.save(); x.translate(p.x, p.y); x.rotate(p.r); x.fillStyle = p.c; x.fillRect(-p.s / 2, -p.s / 2, p.s, p.s * .6); x.restore(); }); if (++t < 170) requestAnimationFrame(f); else c.remove(); })();
+}
+function icsUrl(c) {
+  const d = new Date(c.drawDate), f = x => x.toISOString().replace(/[-:]/g, "").split(".")[0] + "Z";
+  const s = ["BEGIN:VCALENDAR", "VERSION:2.0", "BEGIN:VEVENT", "DTSTART:" + f(d), "DTEND:" + f(new Date(+d + 3600e3)), "SUMMARY:Sorteo " + c.short, "END:VEVENT", "END:VCALENDAR"].join("\r\n");
+  return URL.createObjectURL(new Blob([s], { type: "text/calendar" }));
+}
+const notFoundCard = (title, msg) => `<section class="block"><div class="wrap" style="max-width:560px"><div class="card center"><h1 style="font-size:2rem">${title}</h1><p class="muted">${msg}</p><a class="btn" href="#/sorteos">Ver sorteos</a></div></div></section>`;
+
+/* ---------- Router ---------- */
+const routes = {};
+const TITLES = { "": "Inicio", como: "Cómo funciona", sorteos: "Sorteos en curso", concurso: "Sorteo", checkout: "Datos y pago", ticket: "Tus tickets", "mis-tickets": "Recupera tus tickets", verificar: "Verificar sorteo", admin: "Panel interno", legal: "Revisión legal" };
+const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
+function route() {
+  const raw = location.hash.slice(2) || "";
+  const [rawName, qs] = raw.split("?");
+  const name = rawName.replace(/\/+$/, "");
+  const params = Object.fromEntries(new URLSearchParams(qs || ""));
+  const navName = name === "concurso" || name === "checkout" ? "sorteos" : name;
+  $$("#nav a").forEach(a => { const on = a.dataset.r === navName; a.classList.toggle("on", on); on ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"); });
+  const d = $("details.demo"); if (d) d.open = false;
+  const app = $("#app"); app.innerHTML = "";
+  window.scrollTo(0, 0);
+  document.title = (has(TITLES, name) ? TITLES[name] : "No encontrada") + " · Prototipo de sorteos";
+  try {
+    (has(routes, name) && name !== "__404" ? routes[name] : routes.__404)(app, params);
+  } catch (err) {
+    console.error(err);
+    app.innerHTML = `<section class="block"><div class="wrap" style="max-width:560px"><div class="card bad-box"><h2>Algo salió mal</h2><p class="muted">No pudimos mostrar esta pantalla. Tus datos no se perdieron.</p><a class="btn" href="#/">Volver al inicio</a></div></div></section>`;
+  }
+  startCountdown();
+  app.focus({ preventScroll: true });
+}
+window.addEventListener("hashchange", route);
+document.addEventListener("click", e => {
+  const d = $("details.demo");
+  if (d && d.open && !d.contains(e.target)) d.open = false;
+  if (e.target.closest("[data-reset]")) {
+    ["orders", "contests", "draws"].forEach(k => store.remove(k)); sel = blankSel(null);
+    toast("Datos de demo reiniciados."); if (location.hash !== "#/") location.hash = "#/"; else route();
+  }
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") { const d = $("details.demo"); if (d) d.open = false; } });
+routes.__404 = app => {
+  app.innerHTML = `<section class="block"><div class="wrap" style="max-width:560px"><div class="card center"><h1 style="font-size:2rem">Página no encontrada</h1><p class="muted">El enlace no existe o cambió.</p><a class="btn" href="#/">Volver al inicio</a></div></div></section>`;
+};
+
+/* ---------- Inicio ---------- */
+routes[""] = app => {
+  const act = activeContests(), fin = allContests().filter(c => c.status === "finished");
+  const F = act.find(c => c.featured) || act[0];
+  if (F) useContest(F.id);
+  const heroHTML = F ? `
+    <div>
+      <span class="badge"><i class="live"></i> ${F.star ? "⭐ Sorteo estrella · " + fmtDate(F.drawDate) : act.length + " sorteo" + (act.length > 1 ? "s" : "") + " en curso · destacado: " + fmtDate(F.drawDate)}</span>
+      <h1>${F.headline ? esc(F.headline).replace(/(\d[\d.]*[  ]m²)/g, '<span class="gold">$1</span>') : `Participa por <span class="gold">${esc(F.short)}</span>`}<span style="display:block;font-size:.4em;font-weight:600;color:#d9d3ff;margin-top:10px">Tickets desde ${clp(F.price)}</span></h1>
+      <p class="lead">Compra tu ticket en menos de un minuto, recibe tus números al instante y comprueba tú mismo que el sorteo es limpio.</p>
+      ${F.facts ? statsHTML(F, "max-width:420px;margin:0 0 4px") : ""}
+      ${countdownHTML()}
+      <div class="actions"><a class="btn big" href="#/concurso?c=${encodeURIComponent(F.id)}">Quiero mi ticket</a><a class="btn big glass" href="#/sorteos">Ver todos los sorteos</a></div>
+    </div>
+    <div class="prize">${ART[F.art] || ART.gift}<span class="tag t1">Ticket desde ${clp(F.price)}</span><span class="tag t2">Sorteo verificable ✓</span><span class="note">Imagen referencial</span></div>`
+    : `<div><h1>No hay sorteos en curso</h1><p class="lead">Pronto abriremos uno nuevo. Mientras tanto, revisa los resultados anteriores.</p></div><div></div>`;
+  app.innerHTML = `
+  <section class="hero"><div class="wrap">${heroHTML}</div></section>
+  <div class="trust"><div class="wrap">
+    <div>${ICON.shield}Sorteo verificable por cualquiera</div>
+    <div>${ICON.bolt}Tickets al instante en tu correo</div>
+    <div>${ICON.undo}Devolución si no se alcanza la meta</div>
+    <div>${ICON.doc}Bases y acta a la vista, antes de pagar</div>
+  </div></div>
+  <section class="block" id="sorteos"><div class="wrap">
+    <div style="display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:20px"><div><h2 style="margin:0">Sorteos en curso</h2><p class="muted" style="margin:4px 0 0">Elige el premio que quieres y compra tu ticket.</p></div><a href="#/sorteos" class="btn alt">Ver todos →</a></div>
+    <div class="cgrid">${act.length ? act.map(cardHTML).join("") : '<div class="card">Por ahora no hay sorteos activos.</div>'}</div>
+  </div></section>
+  <section class="block" id="como" style="padding-top:8px"><div class="wrap">
+    <h2>Así de simple</h2>
+    <div class="how" style="margin-top:28px">
+      <div class="card"><div class="ico">${ICON.ticket}</div><h3>Elige y reserva</h3><p class="muted">Escoge el sorteo y tu pack. Te asignamos números al azar o eliges los tuyos. Quedan reservados 10 minutos.</p></div>
+      <div class="card"><div class="ico">${ICON.card}</div><h3>Paga como siempre</h3><p class="muted">Webpay, Flow, Mercado Pago o transferencia. Sin crear cuenta ni contraseñas.</p></div>
+      <div class="card"><div class="ico">${ICON.bolt}</div><h3>Recibe tus tickets</h3><p class="muted">Aparecen en pantalla y llegan a tu correo. Si los pierdes, los recuperas con tu RUT.</p></div>
+      <div class="card"><div class="ico">${ICON.eye}</div><h3>Verifica el sorteo</h3><p class="muted">Cada sorteo tiene su propia huella pública. Tú mismo puedes comprobar el resultado.</p></div>
+    </div>
+  </div></section>
+  <section class="block"><div class="wrap">
+    <div class="verify-teaser">
+      <div><span class="badge">No tienes que confiar en nosotros</span><h2>Un sorteo que cualquiera puede comprobar</h2><p>Antes de vender el primer ticket de cada sorteo publicamos una huella digital. Cuando se sortea, la revelamos y tú recalculas el resultado en tu propio navegador.</p><a class="btn" href="#/verificar${F ? "?c=" + encodeURIComponent(F.id) : ""}">Probar el verificador</a></div>
+      <div class="hashbox"><b>Compromiso publicado${F ? " (" + esc(F.short) + ")" : ""}:</b><br>${F ? F.commit : "—"}<br><br><b>Resultado =</b> SHA-256(semilla : valor público : total) mod total + 1</div>
+    </div>
+  </div></section>
+  ${fin.length ? `<section class="block" style="padding-top:8px"><div class="wrap"><h2>Sorteos anteriores</h2><p class="muted">Todos con su resultado verificable.</p><div class="cgrid">${fin.map(cardHTML).join("")}</div></div></section>` : ""}
+  <section class="block"><div class="wrap" style="max-width:760px">
+    <h2>Preguntas frecuentes</h2>
+    <details class="faq"><summary>¿Puedo participar en más de un sorteo?</summary><p>Sí. Cada sorteo es independiente: tiene su propio stock de tickets, meta mínima, fecha y verificación. Puedes comprar en varios.</p></details>
+    <details class="faq"><summary>¿Cómo sé que el sorteo no está arreglado?</summary><p>Publicamos el compromiso antes de abrir ventas y usamos un valor público externo. Con eso, nadie (ni nosotros) puede cambiar el resultado. Puedes verificarlo en "Verificar sorteo".</p></details>
+    <details class="faq"><summary>¿Qué pasa si un sorteo no alcanza la meta mínima?</summary><p>Se devuelve el 100% de lo pagado en ese sorteo. (Propuesta de diseño, sujeta a revisión legal.)</p></details>
+    <details class="faq"><summary>¿Y si pagué y no me llegó el correo?</summary><p>Entra a "Mis tickets" con tu RUT o correo y los ves al instante. Soporte también puede reenviarlos.</p></details>
+    <details class="faq"><summary>¿Puedo elegir mis números?</summary><p>Sí. Puedes elegirlos tú o dejar que se asignen al azar con un generador seguro. Ambas opciones tienen las mismas probabilidades.</p></details>
+  </div></section>`;
+};
+routes["como"] = app => { routes[""](app); setTimeout(() => $("#como")?.scrollIntoView(), 0); };
+
+/* ---------- Listado de sorteos ---------- */
+routes["sorteos"] = app => {
+  const mode = ["cierre", "precio", "avance"].includes(sel.sort) ? sel.sort : "cierre";
+  const act = activeContests(), fin = allContests().filter(c => c.status === "finished");
+  const sorters = {
+    cierre: (a, b) => new Date(a.drawDate) - new Date(b.drawDate),
+    precio: (a, b) => a.price - b.price,
+    avance: (a, b) => soldSet(b).size / b.total - soldSet(a).size / a.total
+  };
+  app.innerHTML = `
+  <section class="block" style="padding-top:28px"><div class="wrap">
+    <h1 style="font-size:clamp(1.8rem,5vw,2.6rem)">Sorteos en curso</h1>
+    <p class="muted">${act.length} sorteo${act.length === 1 ? "" : "s"} activo${act.length === 1 ? "" : "s"}. Cada uno tiene su propio stock, fecha y verificación.</p>
+    <div class="tools"><label style="font-weight:600">Ordenar por <select id="sort"><option value="cierre">Más próximos a sortear</option><option value="precio">Menor precio</option><option value="avance">Más vendidos</option></select></label></div>
+    <div class="cgrid" id="list"></div>
+    ${fin.length ? `<h2 style="margin-top:40px">Sorteos anteriores</h2><div class="cgrid">${fin.map(cardHTML).join("")}</div>` : ""}
+  </div></section>`;
+  const draw = () => { $("#list").innerHTML = act.length ? [...act].sort((a, b) => (b.star ? 1 : 0) - (a.star ? 1 : 0) || sorters[mode](a, b)).map(cardHTML).join("") : '<div class="card">Por ahora no hay sorteos activos.</div>'; };
+  $("#sort").value = mode; draw();
+  $("#sort").addEventListener("change", e => { sel.sort = e.target.value; route(); });
+};
+
+/* ---------- Compra ---------- */
+routes["concurso"] = (app, params) => {
+  const wanted = params.c || sel.cid || (activeContests()[0] || RAW[0]).id;
+  const found = getContest(wanted);
+  if (!found) { app.innerHTML = notFoundCard("Sorteo no encontrado", "Ese sorteo no existe o ya no está disponible."); return; }
+  useContest(found.id);
+  if (sel.cid !== C.id) sel = { ...blankSel(C.id), sort: sel.sort };
+  const art = `<div class="art"${C.star ? ' style="width:min(100%,300px)"' : ""}>${ART[C.art] || ART.gift}</div>`;
+  const others = activeContests().filter(c => c.id !== C.id);
+  if (C.status === "finished") {
+    app.innerHTML = `<section class="block"><div class="wrap" style="max-width:760px">
+      <div class="chead">${art}<div><span class="chip">Sorteo finalizado</span><h1>${esc(C.name)}</h1><p class="muted">Sorteado el ${fmtDate(C.drawDate, { day: "numeric", month: "long", year: "numeric" })}</p></div></div>
+      <div class="celebrate"><span class="badge">🏆 Resultado oficial</span><p style="color:#d9d3ff;margin:0">Número ganador</p><h1 style="color:var(--gold);margin:6px 0 14px">N° ${pad(C.winner)}</h1>
+      <p class="small" style="color:#cfc8f5">Calculado con SHA-256(semilla : valor público : total) mod total + 1. Puedes comprobarlo tú mismo.</p>
+      <a class="btn" href="#/verificar?c=${encodeURIComponent(C.id)}">Verificar este sorteo</a></div>
+      ${others.length ? `<h2 style="margin-top:36px;font-size:1.4rem">Otros sorteos en curso</h2><div class="cgrid">${others.map(cardHTML).join("")}</div>` : ""}
+    </div></section>`;
+    return;
+  }
+  const sold = soldSet(), pages = Math.ceil(C.total / 200), avail = C.total - sold.size;
+  if (avail <= 0) {
+    app.innerHTML = `<section class="block"><div class="wrap" style="max-width:760px"><div class="chead">${art}<div><span class="chip bad">Agotado</span><h1>${esc(C.name)}</h1></div></div>
+      <div class="card center"><h2>¡Tickets agotados!</h2><p class="muted">Se vendieron todos los tickets de este sorteo. Puedes verificar cómo se realizará.</p><a class="btn" href="#/verificar?c=${encodeURIComponent(C.id)}">Ver cómo se verifica</a></div>
+      ${others.length ? `<h2 style="margin-top:36px;font-size:1.4rem">Otros sorteos en curso</h2><div class="cgrid">${others.map(cardHTML).join("")}</div>` : ""}</div></section>`;
+    return;
+  }
+  const fits = C.packs.map(p => p.q).filter(q => q <= avail);
+  if (!fits.includes(sel.q)) sel.q = Math.max(...fits);
+  sel.numbers = sel.numbers.filter(n => !sold.has(n)).slice(0, sel.q);
+  if (sel.mode === "azar" && sel.numbers.length !== sel.q) sel.numbers = rollRandom(sel.q);
+  app.innerHTML = `
+  <section class="block" style="padding-top:24px"><div class="wrap">
+    <div class="chead">${art}<div>${C.star ? '<span class="starflag">⭐ Sorteo estrella</span> ' : ""}<span class="chip">Sorteo ${fmtDate(C.drawDate)}</span><h1>${esc(C.name)}</h1><p class="muted" style="margin:0">Ticket desde ${clp(C.price)} · <a href="#/sorteos">ver otros sorteos</a>${C.star ? ' · <a href="#/concurso?c=' + encodeURIComponent(C.id) + '" id="toFicha">ver ficha del premio ↓</a>' : ""}</p>${C.facts ? statsHTML(C, "max-width:360px;margin-top:12px") : ""}</div></div>
+    <ol class="stepper"><li class="now"><b>1</b>Tickets</li><li><b>2</b>Datos y pago</li><li><b>3</b>¡Listo!</li></ol>
+    <div class="grid two" id="buyGrid">
+      <div class="grid">
+        <div class="card"><h2 style="font-size:1.3rem">1. Elige tu pack</h2>
+          <div class="packs" id="packs" style="margin-top:20px">${C.packs.map(p => `<button class="pack" data-q="${p.q}" ${p.q > avail ? "disabled" : ""} aria-pressed="${sel.q === p.q}">${p.q === 10 ? '<span class="pop">⭐ Más elegido</span>' : ""}<div class="q">${p.q}<small>ticket${p.q > 1 ? "s" : ""}</small></div><div class="pr">${clp(p.price)}</div>${savePct(p) ? `<span class="sv">Ahorras ${savePct(p)}%</span>` : ""}</button>`).join("")}</div>
+        </div>
+        <div class="card"><h2 style="font-size:1.3rem">2. Tus números</h2>
+          <div class="seg" role="group" aria-label="Modo de números"><button data-mode="azar" aria-pressed="${sel.mode === "azar"}">🎲 Al azar</button><button data-mode="elige" aria-pressed="${sel.mode === "elige"}">✋ Los elijo yo</button></div>
+          <div class="stubs" id="stubs" aria-live="polite"></div>
+          <div id="azarCtl"><button class="btn alt" id="reroll">🎲 Cambiar números</button> <span class="small muted">Quedan reservados al pasar al pago.</span></div>
+          <div id="pickCtl">
+            <p class="muted small">Tachados: ya vendidos. Elige exactamente <b id="needN"></b>.</p>
+            <div class="pager"><button class="btn ghost" id="prev" aria-label="Anterior">←</button><span id="pageLbl" style="font-weight:700"></span><button class="btn ghost" id="next" aria-label="Siguiente">→</button>
+              <label style="margin-left:auto;display:flex;gap:8px;align-items:center;font-weight:600">Ir al N° <input id="goto" type="number" min="1" max="${C.total}" style="width:96px;margin:0"></label>
+              <button class="btn alt" id="rand">Completar al azar</button></div>
+            <div class="numgrid" id="grid"></div>
+          </div>
+        </div>
+      </div>
+      <aside class="grid sticky-aside">
+        <div class="card" id="oddsCard"></div>
+        <div class="card">${progressHTML()}</div>
+        <div class="card" style="text-align:center"><div class="small muted">Sorteo en</div>${countdownHTML().replace('class="cd"', 'class="cd" style="justify-content:center"')}<a class="small" href="#/verificar?c=${encodeURIComponent(C.id)}">Cómo se verifica este sorteo</a></div>
+      </aside>
+    </div>
+    ${C.star ? fichaHTML(C) : ""}
+    ${others.length ? `<h2 style="margin-top:44px;font-size:1.4rem">También te pueden interesar</h2><div class="cgrid">${others.slice(0, 3).map(cardHTML).join("")}</div>` : ""}
+  </div></section>
+  <div class="sticky-bar"><div class="in"><div><div class="tot" id="sumTot"></div><div class="small muted" id="sumSub"></div></div><button class="btn big" id="go">Continuar al pago →</button></div></div>`;
+  function stubsHTML() {
+    let h = sel.numbers.map(n => `<span class="stub">${pad(n)}${sel.mode === "elige" ? `<button data-rm="${n}" aria-label="Quitar ${n}">×</button>` : ""}</span>`).join("");
+    for (let i = sel.numbers.length; i < sel.q; i++) h += `<span class="stub empty">----</span>`;
+    return h;
+  }
+  function refresh() {
+    sel.page = Math.min(sel.page, pages - 1);
+    const p = packOf(sel.q), soldN = sold.size, nowP = sel.q / soldN * 100, fullP = sel.q / C.total * 100;
+    $$("#packs .pack").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.q === sel.q)));
+    $$("[data-mode]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === sel.mode)));
+    $("#azarCtl").hidden = sel.mode !== "azar"; $("#pickCtl").hidden = sel.mode !== "elige";
+    $("#needN").textContent = sel.q + " número" + (sel.q > 1 ? "s" : "");
+    $("#stubs").innerHTML = stubsHTML();
+    $("#oddsCard").innerHTML = `<div class="small muted">Tu probabilidad hoy</div><div class="kpi" style="color:var(--brand)">${nowP.toFixed(3)}%</div>
+      <p class="small muted" style="margin:6px 0 0">${sel.q} de ${num(soldN)} tickets vendidos (1 en ${num(Math.round(soldN / sel.q))}). Si se agotan los ${num(C.total)}: ${fullP.toFixed(3)}%.</p>`;
+    const ready = sel.numbers.length === sel.q;
+    $("#sumTot").textContent = clp(p.price);
+    $("#sumSub").textContent = `${sel.q} ticket${sel.q > 1 ? "s" : ""}${savePct(p) ? " · ahorras " + clp(sel.q * C.price - p.price) : ""}${ready ? "" : " · faltan " + (sel.q - sel.numbers.length) + " números"}`;
+    $("#go").disabled = !ready;
+    if (sel.mode === "elige") drawGrid();
+  }
+  function drawGrid() {
+    const start = sel.page * 200 + 1, end = Math.min(start + 199, C.total);
+    $("#pageLbl").textContent = `${pad(start)} – ${pad(end)}`;
+    $("#prev").disabled = sel.page === 0; $("#next").disabled = sel.page >= pages - 1;
+    let h = "";
+    for (let n = start; n <= end; n++) {
+      const taken = sold.has(n), on = sel.numbers.includes(n);
+      h += `<button class="num${on ? " sel" : ""}" data-n="${n}" ${taken ? "disabled" : ""} aria-pressed="${on}" aria-label="Número ${n}${taken ? " no disponible" : ""}">${pad(n)}</button>`;
+    }
+    $("#grid").innerHTML = h;
+  }
+  $("#packs").addEventListener("click", e => {
+    const b = e.target.closest(".pack"); if (!b || b.disabled) return;
+    sel.q = +b.dataset.q;
+    sel.numbers = sel.mode === "azar" ? rollRandom(sel.q) : sel.numbers.slice(0, sel.q);
+    refresh();
+  });
+  $$("[data-mode]").forEach(b => b.addEventListener("click", () => {
+    sel.mode = b.dataset.mode;
+    if (sel.mode === "azar") sel.numbers = rollRandom(sel.q);
+    refresh();
+  }));
+  $("#reroll").onclick = () => { sel.numbers = rollRandom(sel.q); refresh(); };
+  $("#stubs").addEventListener("click", e => { const b = e.target.closest("[data-rm]"); if (!b) return; sel.numbers = sel.numbers.filter(n => n !== +b.dataset.rm); refresh(); });
+  $("#grid").addEventListener("click", e => {
+    const b = e.target.closest(".num"); if (!b || b.disabled) return;
+    const n = +b.dataset.n, i = sel.numbers.indexOf(n);
+    if (i >= 0) sel.numbers.splice(i, 1);
+    else if (sel.numbers.length < sel.q) sel.numbers.push(n);
+    else return toast("Ya elegiste " + sel.q + ". Quita uno para cambiarlo.");
+    sel.numbers.sort((a, b) => a - b); refresh();
+  });
+  $("#prev").onclick = () => { sel.page = Math.max(sel.page - 1, 0); drawGrid(); };
+  $("#next").onclick = () => { sel.page = Math.min(sel.page + 1, pages - 1); drawGrid(); };
+  $("#goto").addEventListener("change", e => { const n = Math.min(Math.max(+e.target.value || 1, 1), C.total); sel.page = Math.floor((n - 1) / 200); drawGrid(); });
+  $("#rand").onclick = () => {
+    let guard = 0;
+    while (sel.numbers.length < sel.q && guard++ < 50000) { const n = 1 + randInt(C.total); if (!sold.has(n) && !sel.numbers.includes(n)) sel.numbers.push(n); }
+    sel.numbers.sort((a, b) => a - b); refresh();
+  };
+  $("#go").onclick = () => { sel.reservedAt = Date.now(); location.hash = "#/checkout"; };
+  $("#toFicha")?.addEventListener("click", e => { e.preventDefault(); $("#ficha")?.scrollIntoView({ behavior: "smooth" }); });
+  refresh();
+};
+
+/* ---------- Checkout ---------- */
+routes["checkout"] = app => {
+  const found = sel.cid && getContest(sel.cid);
+  if (!found || found.status !== "active" || !sel.reservedAt || sel.numbers.length !== sel.q) { location.replace("#/concurso" + (found ? "?c=" + encodeURIComponent(found.id) : "")); return; }
+  useContest(found.id);
+  const p = packOf(sel.q);
+  const pays = [["Webpay Plus", "#e4002b", "W"], ["Flow", "#00a3ff", "F"], ["Mercado Pago", "#009ee3", "M"], ["Transferencia (Khipu)", "#6b34ff", "K"]];
+  app.innerHTML = `
+  <section class="block" style="padding-top:24px"><div class="wrap">
+    <ol class="stepper"><li class="done"><b>✓</b>Tickets</li><li class="now"><b>2</b>Datos y pago</li><li><b>3</b>¡Listo!</li></ol>
+    <div class="grid two co" id="coGrid">
+      <div class="card">
+        <h2 style="font-size:1.3rem">Tus datos</h2>
+        <p class="muted small">Sin crear cuenta. Los usamos solo para entregarte tus tickets.</p>
+        <form id="f" novalidate>
+          <label class="f">Nombre completo<input name="nombre" autocomplete="name" required maxlength="80"></label>
+          <div class="err" id="eNombre" hidden role="alert">Escribe tu nombre completo.</div>
+          <label class="f">RUT<span>Con o sin puntos y guion</span><input name="rut" autocomplete="off" required placeholder="12.345.678-5" inputmode="text"></label>
+          <div class="err" id="eRut" hidden role="alert">Ese RUT no parece válido. Revísalo.</div>
+          <label class="f">Correo<span>Aquí te llegan tus tickets</span><input name="email" type="email" autocomplete="email" required maxlength="120" placeholder="tu@correo.cl"></label>
+          <div class="err" id="eEmail" hidden role="alert">Escribe un correo válido.</div>
+          <h3 style="margin:8px 0 12px">¿Cómo quieres pagar?</h3>
+          <div class="paytiles">${pays.map((m, i) => `<label class="paytile"><input type="radio" name="pay" value="${m[0]}" ${i === 0 ? "checked" : ""}><i style="background:${m[1]}">${m[2]}</i>${m[0]}</label>`).join("")}</div>
+          <label style="display:flex;align-items:flex-start;margin-bottom:10px"><input type="checkbox" name="edad" required style="margin-top:5px"> Declaro ser mayor de 18 años.</label>
+          <label style="display:flex;align-items:flex-start;margin-bottom:10px"><input type="checkbox" name="bases" required style="margin-top:5px"> Acepto las <a href="#/legal">bases y condiciones</a> de este sorteo (documento de ejemplo).</label>
+          <div class="err" id="eChk" hidden role="alert">Marca ambas casillas para continuar.</div>
+          <button class="btn big block" type="submit">Pagar ${clp(p.price)} (simulado)</button>
+          <p class="center small muted" style="margin:12px 0 0">🔒 Pago seguro. En este prototipo no se cobra nada.</p>
+        </form>
+      </div>
+      <aside class="grid sticky-aside">
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap"><h3 style="margin:0">Tu compra</h3><span class="timer">⏱ <span id="cd">10:00</span></span></div>
+          <p class="small muted" style="margin:6px 0 10px">${esc(C.name)}</p>
+          <div class="stubs" style="margin:8px 0">${sel.numbers.map(n => `<span class="stub" style="font-size:.95rem;padding:7px 14px 7px 22px">${pad(n)}</span>`).join("")}</div>
+          <table><tr><td>${sel.q} ticket${sel.q > 1 ? "s" : ""}</td><td style="text-align:right">${clp(p.price)}</td></tr>
+          ${savePct(p) ? `<tr><td class="muted">Ahorro del pack</td><td style="text-align:right;color:var(--ok)">− ${clp(sel.q * C.price - p.price)}</td></tr>` : ""}
+          <tr><th>Total</th><th style="text-align:right;color:var(--ink);font-size:1.15rem">${clp(p.price)}</th></tr></table>
+          <a href="#/concurso?c=${encodeURIComponent(C.id)}" class="small">← Cambiar mis tickets</a>
+        </div>
+        <div class="card small"><b>Tus números están apartados.</b> Si el pago falla o la reserva expira, vuelven a quedar disponibles. No se cobra dos veces aunque el banco reintente el aviso.</div>
+      </aside>
+    </div>
+  </div></section>`;
+  const cid = C.id;
+  const tick = () => {
+    const el = $("#cd"); if (!el) return clearInterval(iv);
+    const left = 600 - Math.floor((Date.now() - sel.reservedAt) / 1000);
+    if (left <= 0) { clearInterval(iv); sel.reservedAt = null; toast("La reserva expiró. Elige de nuevo."); location.replace("#/concurso?c=" + encodeURIComponent(cid)); return; }
+    el.textContent = String(Math.floor(left / 60)).padStart(2, "0") + ":" + String(left % 60).padStart(2, "0");
+  };
+  let iv = setInterval(tick, 1000); tick();
+  const form = $("#f"); let paying = false;
+  const fmtRut = v => { const c = normRut(v); return c.length < 2 ? c : c.slice(0, -1).replace(/\B(?=(\d{3})+(?!\d))/g, ".") + "-" + c.slice(-1); };
+  form.rut.addEventListener("blur", () => { if (form.rut.value.trim()) form.rut.value = fmtRut(form.rut.value); });
+  form.addEventListener("submit", async e => {
+    e.preventDefault();
+    if (paying) return;
+    const f = new FormData(form), nombre = String(f.get("nombre") || "").trim(), email = String(f.get("email") || "").trim().toLowerCase();
+    const bad = { nombre: nombre.length < 3, rut: !validRut(f.get("rut") || ""), email: !email || !form.email.checkValidity(), chk: !(f.get("edad") && f.get("bases")) };
+    $("#eNombre").hidden = !bad.nombre; $("#eRut").hidden = !bad.rut; $("#eEmail").hidden = !bad.email; $("#eChk").hidden = !bad.chk;
+    const first = bad.nombre ? "nombre" : bad.rut ? "rut" : bad.email ? "email" : bad.chk ? "edad" : null;
+    if (first) { form[first].focus(); return; }
+    paying = true; clearInterval(iv);
+    const btn = form.querySelector("button[type=submit]"); btn.disabled = true;
+    const ov = document.createElement("div"); ov.className = "overlay"; ov.setAttribute("role", "alertdialog"); ov.setAttribute("aria-label", "Procesando pago");
+    ov.innerHTML = `<div class="card"><div class="spin"></div><b>Conectando con ${esc(f.get("pay"))}…</b><p class="muted small">Simulación: no se realiza ningún cobro.</p></div>`;
+    document.body.appendChild(ov);
+    try {
+      await sleep(1500);
+      ov.innerHTML = `<div class="card"><div class="spin"></div><b>Pago aprobado. Emitiendo tus tickets…</b></div>`;
+      await sleep(900);
+      useContest(cid);
+      const live = getContest(cid), taken = soldSet();
+      if (!live || live.status !== "active" || sel.numbers.some(n => taken.has(n))) throw new Error("conflict");
+      const order = {
+        id: "ORD-" + Math.random().toString(36).slice(2, 8).toUpperCase(), at: new Date().toISOString(), cid, cname: C.short,
+        nombre, rut: normRut(f.get("rut")), email, pay: String(f.get("pay")), q: sel.q, total: p.price,
+        numbers: sel.numbers.slice().sort((a, b) => a - b), mode: sel.mode
+      };
+      order.receipt = await sha256([order.id, order.at, order.cid, order.rut, order.numbers.join(","), order.total].join("|"));
+      const all = orders(); all.push(order); store.set("orders", all);
+      sel = { ...blankSel(null), sort: sel.sort };
+      ov.remove(); location.replace("#/ticket?id=" + order.id);
+    } catch (err) {
+      ov.remove(); paying = false; btn.disabled = false;
+      if (err.message === "conflict") {
+        sel.numbers = sel.mode === "azar" ? [] : sel.numbers.filter(n => !soldSet().has(n)); sel.reservedAt = null;
+        toast("Algún número se vendió mientras pagabas. Te devolvemos el dinero y puedes elegir otros.");
+        location.replace("#/concurso?c=" + encodeURIComponent(cid));
+      } else {
+        console.error(err); toast("Algo falló. No se cobró nada. Intenta de nuevo.");
+        iv = setInterval(tick, 1000);
+      }
+    }
+  });
+};
+
+/* ---------- Ticket ---------- */
+routes["ticket"] = (app, params) => {
+  const o = orders().find(x => x.id === params.id);
+  if (!o) { app.innerHTML = `<div class="wrap block"><div class="card"><h2>No encontramos esa compra</h2><a href="#/mis-tickets">Buscar mis tickets</a></div></div>`; return; }
+  const c = getContest(o.cid || "suv");
+  const name = c ? c.short : (o.cname || "el sorteo");
+  const wa = "https://wa.me/?text=" + encodeURIComponent(`¡Ya tengo mis tickets para el sorteo de ${name}! Mis números: ${o.numbers.map(pad).join(", ")}`);
+  const others = activeContests().filter(x => x.id !== (c && c.id));
+  app.innerHTML = `
+  <section class="block" style="padding-top:24px"><div class="wrap" style="max-width:760px">
+    <ol class="stepper"><li class="done"><b>✓</b>Tickets</li><li class="done"><b>✓</b>Datos y pago</li><li class="now"><b>3</b>¡Listo!</li></ol>
+    <div class="celebrate">
+      <span class="badge">✓ Pago aprobado (simulado)</span>
+      <h1 style="font-size:clamp(1.8rem,5vw,2.6rem)">¡Estás dentro, ${esc(o.nombre.split(" ")[0])}!</h1>
+      <p style="color:#d9d3ff">Tus ${o.numbers.length} ticket${o.numbers.length > 1 ? "s" : ""} para el sorteo de ${esc(name)} están aquí abajo 👇</p>
+      <p class="small" style="color:#cfc8f5">Compra <b>${esc(o.id)}</b> · ${new Date(o.at).toLocaleString("es-CL")} · ${clp(o.total)}</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center" class="noprint">
+        <a class="btn" href="${wa}" target="_blank" rel="noopener">Compartir por WhatsApp</a>
+        ${c ? `<a class="btn glass" href="${icsUrl(c)}" download="sorteo.ics">📅 Agregar fecha al calendario</a>` : ""}
+      </div>
+    </div>
+    <h2 style="margin:28px 0 14px;font-size:1.4rem">Tus tickets</h2>
+    <div class="tkts" id="tkts">${o.numbers.slice(0, 4).map(n => ticketHTML(o, c, n)).join("")}</div>
+    ${o.numbers.length > 4 ? `<div class="tkts" id="tktsMore" style="margin-top:16px" hidden>${o.numbers.slice(4).map(n => ticketHTML(o, c, n)).join("")}</div><div class="center noprint" style="margin-top:14px"><button class="btn alt" id="moreTkts">Ver los ${o.numbers.length - 4} tickets restantes</button></div>` : ""}
+    <div class="grid g2" style="margin-top:24px">
+      <div class="card"><h3>Qué sigue</h3><div class="steps"><div class="st"><div>Te enviamos tus tickets a <b>${esc(o.email)}</b> (simulado).</div></div><div class="st"><div>Seguimos vendiendo hasta cerrar o agotar tickets.</div></div>${c ? `<div class="st"><div>El <b>${fmtDate(c.drawDate)}</b> se realiza el sorteo en vivo, y tú puedes verificarlo.</div></div>` : ""}</div></div>
+      <div class="card"><h3>Tu comprobante</h3><p class="mono muted">${esc(o.receipt || "")}</p><p class="small muted">Huella SHA-256 de tu compra. Sirve para trazabilidad y reclamos.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap" class="noprint"><button class="btn alt" id="resend">Ver correo enviado</button><button class="btn ghost" onclick="window.print()">Imprimir</button><a class="btn ghost" href="#/verificar${c ? "?c=" + encodeURIComponent(c.id) : ""}">Verificar sorteo</a></div></div>
+    </div>
+    ${others.length ? `<div class="noprint"><h2 style="margin-top:36px;font-size:1.4rem">¿Quieres participar en otro sorteo?</h2><div class="cgrid">${others.slice(0, 3).map(cardHTML).join("")}</div></div>` : ""}
+  </div></section>`;
+  $("#resend").onclick = () => showEmail(o, c);
+  $("#moreTkts")?.addEventListener("click", e => { $("#tktsMore").hidden = false; e.target.closest("div").remove(); });
+  confetti();
+};
+
+/* ---------- Mis tickets ---------- */
+routes["mis-tickets"] = app => {
+  app.innerHTML = `
+  <section class="block"><div class="wrap" style="max-width:720px">
+    <h1 style="font-size:2rem">Recupera tus tickets</h1>
+    <p class="muted">Ingresa tu RUT o el correo con que compraste. Verás tus tickets de todos los sorteos. (En este prototipo solo se ven las compras hechas en este navegador.)</p>
+    <div class="card"><form id="q" class="grid" style="grid-template-columns:1fr auto;align-items:end"><label class="f" style="margin:0">RUT o correo<input name="q" required></label><button class="btn" type="submit">Buscar</button></form></div>
+    <div id="res" style="margin-top:16px" aria-live="polite"></div>
+  </div></section>`;
+  $("#q").addEventListener("submit", e => {
+    e.preventDefault();
+    const v = new FormData(e.target).get("q").trim().toLowerCase();
+    const found = orders().filter(o => o.email === v || o.rut === normRut(v));
+    $("#res").innerHTML = found.length
+      ? found.map(o => { const c = getContest(o.cid || "suv"); return `<div class="card" style="margin-bottom:12px"><span class="chip">${esc(c ? c.short : o.cname || "Sorteo")}</span><div style="margin-top:8px"><b>${esc(o.id)}</b> · ${new Date(o.at).toLocaleDateString("es-CL")} · ${clp(o.total)}</div><div class="stubs">${o.numbers.map(n => `<span class="stub" style="font-size:.95rem;padding:7px 14px 7px 22px">${pad(n)}</span>`).join("")}</div><a href="#/ticket?id=${encodeURIComponent(o.id)}">Ver comprobante</a></div>`; }).join("")
+      : `<div class="card warn-box">No encontramos compras con ese dato. Haz una compra de ejemplo primero.</div>`;
+  });
+};
+
+/* ---------- Verificador ---------- */
+routes["verificar"] = (app, params) => {
+  const all = allContests();
+  const c = all.find(x => x.id === params.c) || all.find(x => x.featured) || all[0];
+  const fin = c.status === "finished";
+  app.innerHTML = `
+  <section class="block"><div class="wrap" style="max-width:820px">
+    <h1 style="font-size:2rem">Verifica el sorteo tú mismo</h1>
+    <p class="muted">No tienes que confiar en nosotros: el resultado se puede recalcular con datos públicos.</p>
+    <label class="f" style="max-width:420px">Sorteo<select id="csel">${all.map(x => `<option value="${esc(x.id)}" ${x.id === c.id ? "selected" : ""}>${esc(x.short)}${x.status === "finished" ? " (finalizado)" : ""}</option>`).join("")}</select></label>
+    <div class="card"><div class="steps">
+      <div class="st"><div><b>Antes de vender:</b> publicamos el <i>compromiso</i>, la huella SHA-256 de una semilla secreta. Desde la huella no se puede deducir la semilla.</div></div>
+      <div class="st"><div><b>Al cerrar ventas:</b> se congela el total de tickets vendidos.</div></div>
+      <div class="st"><div><b>El día del sorteo:</b> se toma un valor público externo (<i>beacon</i>) que nadie controla.</div></div>
+      <div class="st"><div><b>Resultado:</b> N° ganador = SHA-256(semilla : beacon : total) mod total + 1. Revelamos la semilla y tú lo recalculas.</div></div>
+    </div></div>
+    <div class="card" style="margin-top:16px">
+      <h2 style="font-size:1.3rem">Verificador: ${esc(c.short)}</h2>
+      ${fin ? `<div class="box ok-box" style="margin-bottom:12px"><b>Resultado oficial: N° ${pad(c.winner)}</b><br><span class="small muted">Verifica abajo que coincide.</span></div>` : `<div class="box warn-box" style="margin-bottom:12px"><b>Este sorteo aún no se realiza.</b><br><span class="small muted">Los datos de abajo son un ejemplo de cómo se verá la revelación.</span></div>`}
+      <p class="small muted" style="margin-bottom:4px">Compromiso publicado antes de abrir ventas:</p>
+      <p class="mono">${esc(c.commit)}</p>
+      <label class="f">Semilla revelada<input id="seed" value="${esc(c.demoSeed)}"></label>
+      <label class="f">Valor público (beacon)<input id="beacon" value="${esc(c.demoBeacon)}"></label>
+      <label class="f">Total de tickets vendidos al cierre<input id="tot" type="number" value="${c.demoTotal}"></label>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="chk">Verificar</button><button class="btn ghost" id="tamper">Alterar la semilla (probar)</button></div>
+      <div id="out" aria-live="polite" style="margin-top:16px"></div>
+    </div>
+  </div></section>`;
+  $("#csel").addEventListener("change", e => { location.hash = "#/verificar?c=" + encodeURIComponent(e.target.value); });
+  const run = async () => {
+    const seed = $("#seed").value, beacon = $("#beacon").value, tot = Number($("#tot").value);
+    if (!seed.trim() || !beacon.trim()) return toast("Completa la semilla y el valor público.");
+    if (!Number.isInteger(tot) || tot < 1 || tot > 1e9) return toast("El total debe ser un número entero entre 1 y 1.000.000.000.");
+    let commit, h, win;
+    try {
+      commit = await sha256(seed); h = await sha256(`${seed}:${beacon}:${tot}`);
+      win = (BigInt("0x" + h) % BigInt(tot) + 1n).toString();
+    } catch (err) {
+      $("#out").innerHTML = `<div class="box warn-box">Tu navegador no permite calcular la huella en esta conexión. Abre el sitio desde su enlace https.</div>`;
+      return;
+    }
+    const match = commit === c.commit;
+    $("#out").innerHTML = `
+      <div class="box ${match ? "ok-box" : "bad-box"}"><b>${match ? "✓ La semilla coincide con el compromiso publicado" : "✗ La semilla NO coincide con el compromiso: el resultado no es válido"}</b>
+      <p class="mono muted" style="margin:8px 0 0">SHA-256(semilla) = ${commit}</p></div>
+      <div class="box" style="margin-top:10px"><b style="font-size:1.2rem">Número ganador calculado: ${match ? "N° " + pad(win) : "—"}</b>
+      ${match && fin ? `<p class="small" style="margin:6px 0 0">${String(win) === String(c.winner) ? "✓ Coincide con el resultado oficial." : "✗ No coincide con el resultado oficial."}</p>` : ""}
+      <p class="mono muted" style="margin:8px 0 0">SHA-256(semilla:beacon:total) = ${h}</p></div>`;
+  };
+  $("#chk").onclick = run;
+  $("#tamper").onclick = () => { $("#seed").value = c.demoSeed + "X"; run(); };
+};
+
+/* ---------- Panel interno ---------- */
+routes["admin"] = app => {
+  const tabsDef = [["res", "Resumen"], ["new", "Crear sorteo"], ["draw", "Consola de sorteo"], ["sup", "Soporte"], ["log", "Auditoría"]];
+  app.innerHTML = `
+  <section class="block" style="padding-top:24px"><div class="wrap">
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:center"><h1 style="font-size:1.8rem;margin:0">Panel interno</h1><span class="chip">Rol: Administrador (demo)</span></div>
+    <div class="tabs" role="tablist" style="margin-top:16px">${tabsDef.map(([k, t], i) => `<button role="tab" data-t="${k}" aria-selected="${i === 0}">${t}</button>`).join("")}</div>
+    <div id="pane"></div>
+  </div></section>`;
+  let drawSel = null;
+  const panes = {
+    res() {
+      const all = allContests(), os = orders(), days = [38, 52, 41, 77, 95, 64, 120], max = Math.max(...days);
+      const totalSold = all.reduce((a, c) => a + soldSet(c).size, 0), act = all.filter(c => c.status === "active");
+      const risk = act.filter(c => soldSet(c).size < c.minSold && (new Date(c.drawDate) - Date.now()) / 864e5 < 21);
+      return `<div class="grid g4">
+        <div class="card"><div class="muted small">Ventas hoy</div><div class="kpi">${clp(412500 + os.reduce((a, o) => a + o.total, 0))}</div></div>
+        <div class="card"><div class="muted small">Sorteos activos</div><div class="kpi">${act.length}</div></div>
+        <div class="card"><div class="muted small">Tickets vendidos (todos)</div><div class="kpi">${num(totalSold)}</div></div>
+        <div class="card"><div class="muted small">Pagos con problema</div><div class="kpi" style="color:var(--warn)">3</div></div>
+      </div>
+      <div class="card" style="margin-top:16px"><h3>Sorteos</h3><div class="table-wrap"><table><tr><th>Sorteo</th><th>Estado</th><th>Vendidos</th><th>Meta</th><th>Fecha</th><th></th></tr>
+        ${all.map(c => { const s = soldSet(c).size; return `<tr><td><b>${esc(c.short)}</b>${c.custom ? ' <span class="chip">nuevo</span>' : ""}</td><td>${c.status === "finished" ? '<span class="chip">Finalizado</span>' : s >= c.minSold ? '<span class="chip ok">Asegurado</span>' : '<span class="chip warn">Vendiendo</span>'}</td><td>${num(s)} / ${num(c.total)} (${Math.round(s / c.total * 100)}%)</td><td>${num(c.minSold)}</td><td>${fmtDate(c.drawDate)}</td><td><a href="#/concurso?c=${encodeURIComponent(c.id)}">Ver</a></td></tr>`; }).join("")}</table></div></div>
+      <div class="grid g2" style="margin-top:16px">
+        <div class="card"><h3>Tickets por día (últimos 7)</h3>
+          <svg viewBox="0 0 280 120" width="100%" role="img" aria-label="Gráfico de barras de tickets por día">
+            ${days.map((v, i) => `<rect x="${i * 40 + 8}" y="${105 - v / max * 90}" width="28" height="${v / max * 90}" rx="5" fill="var(--brand)"/><text x="${i * 40 + 22}" y="118" font-size="9" text-anchor="middle" fill="var(--muted)">D${i + 1}</text><text x="${i * 40 + 22}" y="${100 - v / max * 90}" font-size="9" text-anchor="middle" fill="var(--ink)">${v}</text>`).join("")}
+          </svg></div>
+        <div class="card"><h3>Alertas</h3><ul style="padding-left:18px;margin:0">
+          <li><span class="chip warn">Pago</span> 3 pagos aprobados sin ticket generado (reintento automático en curso).</li>
+          <li><span class="chip bad">Fraude</span> 1 RUT con 14 intentos fallidos en 10 min (bloqueado).</li>
+          ${risk.map(c => `<li><span class="chip warn">Meta</span> ${esc(c.short)}: faltan ${num(c.minSold - soldSet(c).size)} tickets y quedan menos de 3 semanas.</li>`).join("")}</ul></div>
+      </div>`;
+    },
+    new() {
+      const d = new Date(Date.now() + 30 * 864e5), local = new Date(d - d.getTimezoneOffset() * 6e4).toISOString().slice(0, 16);
+      return `<div class="card"><h2 style="font-size:1.3rem">Asistente de creación de sorteo</h2>
+        <p class="muted small">El sorteo nuevo aparece de inmediato en el sitio público (solo en este navegador).</p>
+        <form id="nf" class="grid g2" novalidate>
+          <label class="f">Nombre del premio<input value="Bicicleta eléctrica (ejemplo)" name="n" maxlength="60"></label>
+          <label class="f">Ilustración<select name="art"><option value="gift">Premio genérico</option><option value="car">Auto</option><option value="moto">Moto</option><option value="phone">Tecnología</option><option value="cash">Dinero</option><option value="scooter">Scooter</option><option value="house">Inmueble</option></select></label>
+          <label class="f">Total de tickets<input type="number" value="3000" name="t"></label>
+          <label class="f">Meta mínima<input type="number" value="2000" name="m"></label>
+          <label class="f">Precio por ticket (CLP)<input type="number" value="3000" name="p"></label>
+          <label class="f">Fecha y hora del sorteo<input type="datetime-local" name="d" value="${local}"></label>
+          <label class="f">Acta / bases notariales (PDF)<input type="file" accept="application/pdf"></label>
+          <div class="err" id="nerr" hidden role="alert" style="grid-column:1/-1;margin:0"></div>
+          <div style="grid-column:1/-1"><button class="btn" type="submit">Generar compromiso y publicar</button></div>
+        </form><div id="nout" aria-live="polite"></div></div>`;
+    },
+    draw() {
+      const act = activeContests();
+      if (!act.length) return `<div class="card"><h2 style="font-size:1.3rem">Consola de sorteo</h2><p class="muted">No hay sorteos activos para sortear.</p></div>`;
+      if (!act.some(c => c.id === drawSel)) drawSel = act[0].id;
+      const c = act.find(x => x.id === drawSel), s = soldSet(c).size;
+      return `<div class="card"><h2 style="font-size:1.3rem">Consola de sorteo</h2>
+        <label class="f" style="max-width:420px">Sorteo a ejecutar<select id="dsel">${act.map(x => `<option value="${esc(x.id)}" ${x.id === drawSel ? "selected" : ""}>${esc(x.short)}</option>`).join("")}</select></label>
+        <p class="muted small">Cada paso queda en la bitácora. La semilla solo se revela al final y se compara con el compromiso publicado. En esta demo, al sortear, el sorteo pasa a "Finalizado" en el sitio público.</p>
+        <ol class="qs" id="chk" style="list-style:none;padding:0">
+          <li><label><input type="checkbox"> Meta mínima alcanzada (hoy: ${num(s)} de ${num(c.minSold)}${s >= c.minSold ? "" : " — en producción no se podría sortear; se devolvería el dinero"})</label></li>
+          <li><label><input type="checkbox"> Ventas cerradas y total congelado: ${num(c.demoTotal)}</label></li>
+          <li><label><input type="checkbox"> Acta notarial y transmisión en vivo listas</label></li>
+          <li><label><input type="checkbox"> Valor público (beacon) obtenido: <span class="mono">${esc(c.demoBeacon.slice(0, 16))}…</span></label></li>
+        </ol>
+        <label class="f">Doble confirmación: escribe <b>SORTEAR</b><input id="conf" autocomplete="off"></label>
+        <button class="btn danger" id="run" disabled>Ejecutar sorteo (demo)</button>
+        <div id="dout" aria-live="polite" style="margin-top:14px"></div></div>`;
+    },
+    sup() {
+      return `<div class="card"><h2 style="font-size:1.3rem">Soporte al cliente</h2>
+        <form id="sf" class="grid" style="grid-template-columns:1fr auto;align-items:end"><label class="f" style="margin:0">RUT, correo o N° de pedido<input name="q"></label><button class="btn" type="submit">Buscar</button></form>
+        <div id="sout" style="margin-top:14px" aria-live="polite"></div></div>`;
+    },
+    log() {
+      const rows = [["10:02:11", "admin@demo", "Publica compromiso sorteo SUV", "0000…a1f3"], ["10:04:40", "admin@demo", "Abre ventas", "a1f3…9c20"], ["14:31:05", "soporte@demo", "Reenvía correo ORD-9XK2PQ", "9c20…77de"], ["16:12:48", "finanzas@demo", "Aprueba reembolso ORD-4TT8LM", "77de…b0a4"]];
+      return `<div class="card"><h2 style="font-size:1.3rem">Bitácora de auditoría</h2><p class="muted small">Registro solo-agregar: cada línea incluye la huella de la anterior, de modo que cualquier alteración se detecta.</p>
+        <div class="table-wrap"><table><tr><th>Hora</th><th>Usuario</th><th>Acción</th><th>Huella</th></tr>${rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td class="mono">${r[3]}</td></tr>`).join("")}</table></div></div>`;
+    }
+  };
+  function show(k) {
+    $$(".tabs button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.t === k)));
+    $("#pane").innerHTML = panes[k]();
+    if (k === "new") $("#nf").addEventListener("submit", async e => {
+      e.preventDefault();
+      const f = new FormData(e.target), err = $("#nerr"), name = String(f.get("n") || "").trim();
+      const t = Number(f.get("t")), m = Number(f.get("m")), p = Number(f.get("p")), when = new Date(String(f.get("d")));
+      const msg = name.length < 3 ? "Escribe el nombre del premio."
+        : !Number.isInteger(t) || t < 100 || t > 100000 ? "El total de tickets debe ser un entero entre 100 y 100.000."
+        : !Number.isInteger(m) || m < 1 || m > t ? "La meta mínima debe ser un entero entre 1 y el total de tickets."
+        : !Number.isInteger(p) || p < 500 || p > 100000 ? "El precio debe ser un entero entre $500 y $100.000."
+        : isNaN(+when) || +when < Date.now() + 36e5 ? "La fecha del sorteo debe ser al menos una hora en el futuro."
+        : "";
+      err.hidden = !msg; err.textContent = msg; if (msg) return;
+      const id = "c" + Date.now().toString(36), seed = Array.from(crypto.getRandomValues(new Uint8Array(16)), b => b.toString(16).padStart(2, "0")).join("");
+      const commit = await sha256(seed), beacon = await sha256("beacon-" + id);
+      const art = String(f.get("art")), list = store.get("contests", []);
+      list.push({ id, name: name + " (ejemplo)", short: name.slice(0, 40), art: has(ART, art) ? art : "gift", total: t, minSold: m, price: p, drawDate: when.toISOString(), ratio: 0, status: "active", commit, demoSeed: seed, demoBeacon: beacon, demoTotal: t });
+      store.set("contests", Array.isArray(list) ? list : []);
+      $("#nout").innerHTML = `<div class="box ok-box" style="margin-top:12px"><b>✓ Sorteo publicado</b><p class="mono" style="margin:6px 0">Compromiso: ${commit}</p><p class="small muted" style="margin:0 0 8px">La semilla se guarda cifrada y solo se revela el día del sorteo. Esta huella se publica antes de abrir ventas.</p><a class="btn alt" href="#/concurso?c=${encodeURIComponent(id)}">Ver en el sitio público</a></div>`;
+    });
+    if (k === "draw" && $("#run")) {
+      $("#dsel").addEventListener("change", e => { drawSel = e.target.value; show("draw"); });
+      const upd = () => { $("#run").disabled = !($("#conf").value === "SORTEAR" && $$("#chk input").every(i => i.checked)); };
+      $("#conf").addEventListener("input", upd); $$("#chk input").forEach(i => i.addEventListener("change", upd));
+      $("#run").onclick = async () => {
+        $("#run").disabled = true; $("#conf").disabled = true; $$("#chk input").forEach(i => i.disabled = true);
+        const c = getContest(drawSel), w = await winnerOf(c);
+        const d = store.get("draws", {}), draws = d && typeof d === "object" ? d : {};
+        draws[c.id] = { winner: Number(w), at: new Date().toISOString() }; store.set("draws", draws);
+        $("#dout").innerHTML = `<div class="box ok-box"><b>Número ganador: N° ${pad(w)}</b><p class="small muted" style="margin:6px 0 0">Resultado registrado en bitácora. "${esc(c.short)}" ahora figura como finalizado en el sitio público. Compruébalo en <a href="#/verificar?c=${encodeURIComponent(c.id)}">Verificar sorteo</a>.</p></div>`;
+      };
+    }
+    if (k === "sup") $("#sf").addEventListener("submit", e => {
+      e.preventDefault();
+      const q = new FormData(e.target).get("q").trim().toLowerCase();
+      const f = q ? orders().filter(o => o.email === q || o.rut === normRut(q) || o.id.toLowerCase() === q || o.numbers.map(pad).includes(q.padStart(4, "0"))) : [];
+      $("#sout").innerHTML = f.length ? f.map(o => { const c = getContest(o.cid || "suv"); return `<div class="box" style="margin-bottom:10px"><span class="chip">${esc(c ? c.short : o.cname || "Sorteo")}</span> <b>${esc(o.id)}</b> · ${esc(o.nombre)} · ${esc(o.email)} · ${clp(o.total)} · ${esc(o.pay)}<br><span class="small muted">Números: ${o.numbers.map(pad).join(", ")}</span><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="btn alt" data-a="Correo reenviado">Reenviar correo</button><button class="btn ghost" data-a="Solicitud de reembolso enviada a Finanzas">Solicitar reembolso</button></div></div>`; }).join("") : `<div class="box warn-box">Sin resultados. Haz una compra de ejemplo y busca por su correo.</div>`;
+      $$("#sout [data-a]").forEach(b => b.onclick = () => toast(b.dataset.a + " (simulado)"));
+    });
+  }
+  $(".tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) show(b.dataset.t); });
+  show("res");
+};
+
+/* ---------- Revisión legal ---------- */
+routes["legal"] = app => {
+  app.innerHTML = `
+  <section class="block" style="padding-top:24px"><div class="wrap" style="max-width:860px">
+    <div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;align-items:center"><h1 style="font-size:1.8rem;margin:0">Documento para revisión legal</h1><button class="btn alt noprint" onclick="window.print()">Imprimir / PDF</button></div>
+    <p class="muted" style="margin-top:12px">Describe el modelo tal como está diseñado en el prototipo, para que el abogado lo evalúe. No es asesoría legal ni afirma que el modelo sea lícito.</p>
+    <div class="card"><h2 style="font-size:1.3rem">1. Flujo propuesto (por cada sorteo)</h2>
+      <div class="flow">
+        <div class="node"><b>A. Compra del ticket digital</b>El usuario paga un monto fijo y recibe un ticket digital con número único. El ticket es el producto que se vende.</div><div class="arrow">↓</div>
+        <div class="node"><b>B. Acumulación y meta mínima</b>Se vende hasta un máximo de tickets. Si no se alcanza la meta mínima, se devuelve el 100% de lo pagado.</div><div class="arrow">↓</div>
+        <div class="node"><b>C. Sorteo</b>Los tickets vendidos participan en un sorteo con compromiso criptográfico previo, valor público externo, transmisión en vivo y acta notarial.</div><div class="arrow">↓</div>
+        <div class="node"><b>D. Entrega del premio</b>Notificación al ganador, verificación de identidad, entrega documentada y publicación de la evidencia.</div>
+      </div>
+      <p class="small muted" style="margin:12px 0 0">La plataforma puede tener varios sorteos simultáneos. Cada uno es independiente: tiene su propio stock, precio, meta mínima, fecha, bases, compromiso criptográfico y acta.</p>
+    </div>
+    <div class="card" style="margin-top:16px"><h2 style="font-size:1.3rem">2. Preguntas para el abogado</h2>
+      <ol class="qs">
+        <li><b>Calificación del modelo.</b> Si el ticket es el producto y su única función es participar en un sorteo pagado, ¿se considera juego de azar, apuesta o rifa? ¿Qué autorización o régimen aplica (Ley 19.995, Lotería, rifas benéficas, otros)?</li>
+        <li><b>Alternativas de estructura.</b> ¿Existe una forma lícita de estructurarlo (producto con valor propio, promoción comercial, o participación en una entidad autorizada)? ¿Qué requisitos tendría cada una?</li>
+        <li><b>Operación por Internet.</b> ¿Qué cambia por ser online? ¿Hay riesgo de bloqueo de sitio o de medios de pago?</li>
+        <li><b>Tributación (SII).</b> IVA y renta por la venta de tickets, boleta o factura electrónica, y obligaciones sobre el ganador por el premio.</li>
+        <li><b>Consumidores (SERNAC, Ley 19.496).</b> Derecho a retracto, publicidad, información previa, reclamos y responsabilidad por fallas operativas.</li>
+        <li><b>Datos personales.</b> Ley 19.628 y nueva Ley 21.719: base legal, consentimientos, conservación y transferencia (RUT, correo, teléfono).</li>
+        <li><b>Menores de edad.</b> ¿Basta una declaración de mayoría de edad o se exige verificación?</li>
+        <li><b>Medios de pago.</b> ¿Webpay, Flow o Mercado Pago permiten este giro? ¿Qué cláusulas restringen los sorteos?</li>
+        <li><b>Prevención de lavado de activos.</b> ¿Existen obligaciones de reporte o debida diligencia?</li>
+        <li><b>Bases del sorteo y notario.</b> Contenido mínimo de las bases, qué debe certificar el notario y cuándo.</li>
+        <li><b>Responsabilidad.</b> Qué sociedad debe operar, y la responsabilidad de socios e influencers que promocionen.</li>
+        <li><b>Meta mínima y devolución.</b> ¿Es válido condicionar el sorteo a una meta y devolver el dinero? ¿En qué plazo?</li>
+        <li><b>Varios sorteos simultáneos.</b> ¿Se requiere autorización, bases y acta por cada sorteo? ¿Hay límites en cantidad, monto total o frecuencia?</li>
+        <li><b>Premio inmueble: título y gravámenes.</b> Para el sorteo estrella (casa de 200 m² en parcela de 5.000 m²): ¿cómo se acredita que el inmueble está a nombre del organizador y libre de hipotecas, embargos y prohibiciones? ¿Qué estudio de títulos y certificados se exigen antes de abrir ventas?</li>
+        <li><b>Traspaso del inmueble.</b> Escritura pública, inscripción en el Conservador de Bienes Raíces, plazos de entrega, y quién paga gastos notariales, impuestos y contribuciones (ganador u organizador).</li>
+        <li><b>Normativa del predio.</b> Recepción final de la edificación y cumplimiento de las normas de uso de suelo y subdivisión de predios rústicos aplicables a una parcela de 5.000 m² (por ejemplo, el DL 3.516).</li>
+        <li><b>Tributación del premio inmueble.</b> Efectos tributarios para el ganador y para el organizador (renta, donaciones, contribuciones, ganancias de capital).</li>
+        <li><b>Garantía de entrega.</b> ¿Conviene dejar el inmueble en garantía, fideicomiso o custodia hasta el sorteo para proteger a los compradores? ¿Qué ocurre si el organizador lo vende, lo grava o no cumple la entrega?</li>
+      </ol>
+    </div>
+    <div class="card" style="margin-top:16px"><h2 style="font-size:1.3rem">3. Controles incorporados en el diseño</h2>
+      <ul class="qs">
+        <li>Declaración de mayoría de edad y aceptación de bases antes de pagar.</li>
+        <li>Probabilidades visibles antes de comprar.</li>
+        <li>Sorteo estrella (inmueble): documentación del inmueble publicada antes de abrir ventas (certificado de dominio, gravámenes, avalúo, tasación, planos y estudio de títulos).</li>
+        <li>Comprobante por compra con huella SHA-256 y recuperación por RUT o correo.</li>
+        <li>Sorteo verificable públicamente, con compromiso y valor externo propios de cada sorteo.</li>
+        <li>Bitácora de auditoría encadenada para el panel interno.</li>
+        <li>Devolución del 100% si un sorteo no alcanza su meta mínima.</li>
+        <li>Boleta electrónica integrada al flujo de pago (por implementar).</li>
+        <li>Límites de compra y autoexclusión (por definir con el abogado).</li>
+      </ul>
+    </div>
+  </div></section>`;
+};
+
+route();
+</script>
+</body>
+</html>
