@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Plataforma de Sorteos — Prototipo</title>
+<title>cierto — Sorteos verificables (prototipo)</title>
 <meta name="description" content="Prototipo clicable para revisión de flujo y revisión legal. Sin pagos reales ni premios.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -40,7 +40,7 @@ p{margin:0 0 1em}
 /* Header */
 header.top{background:var(--hero-a);color:#fff;position:sticky;top:0;z-index:30}
 header.top .wrap{display:flex;align-items:center;gap:12px;min-height:60px;flex-wrap:wrap}
-.logo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;font-size:1.15rem;color:#fff;text-decoration:none}
+.logo{display:flex;align-items:center;gap:8px;font-family:var(--display);font-weight:800;font-size:1.4rem;letter-spacing:-.02em;color:#fff;text-decoration:none}
 .logo svg{width:28px;height:28px}
 .logo em{font-style:normal;color:var(--cta)}
 nav.main{display:flex;gap:2px;margin-left:auto;align-items:center;flex-wrap:wrap}
@@ -284,7 +284,7 @@ main:focus{outline:none}
   <div class="wrap">
     <a class="logo" href="#/" aria-label="Inicio">
       <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="7" width="28" height="18" rx="4" fill="#b8f54a"/><circle cx="2" cy="16" r="3.2" fill="#120a36"/><circle cx="30" cy="16" r="3.2" fill="#120a36"/><path d="M12 12h8M12 16h8M12 20h5" stroke="#120a36" stroke-width="2" stroke-linecap="round"/></svg>
-      Nombre<em>Provisorio</em>
+      <span>cierto<em>.</em></span>
     </a>
     <nav class="main" id="nav" aria-label="Principal">
       <a href="#/" data-r="">Inicio</a>
@@ -297,7 +297,7 @@ main:focus{outline:none}
   </div>
 </header>
 <main id="app" tabindex="-1"><noscript><div class="wrap block"><div class="card">Este prototipo necesita JavaScript activado.</div></div></noscript></main>
-<footer><div class="wrap">Prototipo estático (HTML/JS). Los datos se guardan solo en tu navegador. Ningún valor mostrado es real. Esto no es asesoría legal ni una oferta.</div></footer>
+<footer><div class="wrap"><b>cierto</b> · sorteos que se pueden comprobar.<br>Prototipo estático (HTML/JS). Los datos se guardan solo en tu navegador. Ningún valor mostrado es real. Esto no es asesoría legal ni una oferta.</div></footer>
 
 <script>
 "use strict";
@@ -520,7 +520,7 @@ function ticketHTML(o, c, n) {
   return `<article class="tkt" aria-label="Ticket número ${n}">
     <div class="tkt-art" aria-hidden="true">${art}</div>
     <div class="tkt-main">
-      <div class="tkt-top"><span class="tkt-brand">Nombre<em>Provisorio</em></span><span class="tkt-tag">TICKET DIGITAL</span></div>
+      <div class="tkt-top"><span class="tkt-brand">cierto<em>.</em></span><span class="tkt-tag">TICKET DIGITAL</span></div>
       <div class="tkt-prize">${esc(c ? c.short : o.cname || "Sorteo")}</div>
       <div class="tkt-num"><small>N°</small>${pad(n)}</div>
       <div class="tkt-meta"><div><small>Sorteo</small><b>${c ? fmtDate(c.drawDate, { day: "numeric", month: "short", year: "numeric" }) : "—"}</b></div><div><small>Titular</small><b>${esc(o.nombre.split(" ")[0])}</b></div><div><small>Pedido</small><b>${esc(o.id)}</b></div></div>
@@ -552,8 +552,8 @@ async function ticketPNG(o, c, n) {
   try { const art = await svgImage(c ? ART[c.art] || ART.gift : ART.gift, 620, 358); g.globalAlpha = .2; g.drawImage(art, x0 - 600, H - 330, 620, 358); g.globalAlpha = 1; } catch (e) {}
   g.fillStyle = "rgba(0,0,0,.22)"; g.fillRect(x0, 0, S, H);
   g.textBaseline = "alphabetic"; g.textAlign = "left";
-  g.font = "800 36px " + D; g.fillStyle = "#fff"; g.fillText("Nombre", 44, 76);
-  const bw = g.measureText("Nombre").width; g.fillStyle = "#b8f54a"; g.fillText("Provisorio", 44 + bw, 76);
+  g.font = "800 36px " + D; g.fillStyle = "#fff"; g.fillText("cierto", 44, 76);
+  const bw = g.measureText("cierto").width; g.fillStyle = "#b8f54a"; g.fillText(".", 44 + bw, 76);
   g.font = "800 20px " + T; g.letterSpacing = "4px"; const tag = "TICKET DIGITAL", tw = g.measureText(tag).width, px = x0 - 44 - (tw + 40);
   rrPath(g, px, 42, tw + 40, 44, 22); g.strokeStyle = "rgba(184,245,74,.6)"; g.lineWidth = 3; g.stroke(); g.fillStyle = "#b8f54a"; g.fillText(tag, px + 22, 72); g.letterSpacing = "0px";
   g.font = "700 32px " + T; g.fillStyle = "#e6e1ff"; let prize = c ? c.short : o.cname || "Sorteo";
@@ -579,11 +579,11 @@ async function buildEmail(o, c, mode) {
   const link = location.href.split("#")[0] + "#/ticket?id=" + encodeURIComponent(o.id);
   const shown = o.numbers.slice(0, 4), more = o.numbers.length - shown.length, F = "font-family:Arial,Helvetica,sans-serif";
   const imgs = emailCache[o.id] || (emailCache[o.id] = await Promise.all(shown.map(n => ticketPNG(o, c, n))));
-  const cid = n => "t" + pad(n) + "@nombreprovisorio";
+  const cid = n => "t" + pad(n) + "@cierto";
   const rows = shown.map((n, i) => `<tr><td style="padding:0 0 14px 0"><img src="${mode === "cid" ? "cid:" + cid(n) : imgs[i]}" width="560" alt="Ticket N° ${pad(n)} · ${esc(name)}" style="display:block;width:100%;max-width:560px;height:auto;border:0"></td></tr>`).join("");
   const body = `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td align="center" style="padding:16px 8px">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px">
-    <tr><td style="padding:4px 0 14px 0;${F}"><font color="#5b2ef0" size="5"><b>Nombre</b></font><font color="#17122e" size="5"><b>Provisorio</b></font></td></tr>
+    <tr><td style="padding:4px 0 14px 0;${F}"><font color="#17122e" size="5"><b>cierto</b></font><font color="#5b2ef0" size="5"><b>.</b></font></td></tr>
     <tr><td style="padding:0 0 6px 0;${F}"><font color="#1a1238" size="6"><b>¡Estás dentro, ${esc(o.nombre.split(" ")[0])}!</b></font></td></tr>
     <tr><td style="padding:0 0 18px 0;${F};line-height:22px"><font color="#4a4570" size="3">Tu pago fue aprobado. Estos son tus ${o.numbers.length} ticket${o.numbers.length > 1 ? "s" : ""} para el sorteo de <b>${esc(name)}</b>${when ? ", que se realiza el <b>" + esc(when) + "</b>" : ""}.</font></td></tr>
     ${rows}
@@ -602,7 +602,7 @@ async function emlText(o, c) {
   const parts = [`--${B}`, 'Content-Type: text/html; charset="utf-8"', "Content-Transfer-Encoding: base64", "", wrap(b64(p.html))];
   p.images.forEach(im => parts.push(`--${B}`, `Content-Type: image/jpeg; name="ticket-${im.n}.jpg"`, "Content-Transfer-Encoding: base64", `Content-ID: <${im.cid}>`, `Content-Disposition: inline; filename="ticket-${im.n}.jpg"`, "", wrap(im.dataUrl.split(",")[1])));
   parts.push(`--${B}--`, "");
-  return ["From: NombreProvisorio <no-responder@ejemplo.invalid>", "To: " + o.email, "Subject: =?UTF-8?B?" + b64(p.subject) + "?=", "X-Unsent: 1", "MIME-Version: 1.0", `Content-Type: multipart/related; type="text/html"; boundary="${B}"`, "", ...parts].join("\r\n");
+  return ["From: cierto <no-responder@ejemplo.invalid>", "To: " + o.email, "Subject: =?UTF-8?B?" + b64(p.subject) + "?=", "X-Unsent: 1", "MIME-Version: 1.0", `Content-Type: multipart/related; type="text/html"; boundary="${B}"`, "", ...parts].join("\r\n");
 }
 async function copyHtml(html, text) {
   try { await navigator.clipboard.write([new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }), "text/plain": new Blob([text], { type: "text/plain" }) })]); return true; } catch (e) {}
@@ -667,7 +667,7 @@ function route() {
   const d = $("details.demo"); if (d) d.open = false;
   const app = $("#app"); app.innerHTML = "";
   window.scrollTo(0, 0);
-  document.title = (has(TITLES, name) ? TITLES[name] : "No encontrada") + " · Prototipo de sorteos";
+  document.title = (has(TITLES, name) ? TITLES[name] : "No encontrada") + " · cierto";
   try {
     (has(routes, name) && name !== "__404" ? routes[name] : routes.__404)(app, params);
   } catch (err) {

@@ -1,4 +1,4 @@
-# Prototipo: plataforma de sorteos (demo para revisión)
+# cierto — prototipo de plataforma de sorteos (demo para revisión)
 
 Sitio estático (un solo `index.html`, sin dependencias ni servidor). Todo es ficticio:
 sin pagos reales, sin premios, y los datos se guardan solo en el navegador de quien lo prueba.
