@@ -3,6 +3,13 @@
 Sitio estático (un solo `index.html`, sin dependencias ni servidor). Todo es ficticio:
 sin pagos reales, sin premios, y los datos se guardan solo en el navegador de quien lo prueba.
 
+## Novedades de esta versión
+- **Tour guiado** ("▶ Tour 2 min", arriba a la derecha): 10 pasos que recorren todo el sitio.
+- **Sorteo por lista de tickets vendidos**: el verificador muestra la cantidad y la huella de la lista, permite descargarla y detecta si se altera un ticket.
+- **Páginas legales** (borradores de ejemplo): bases por sorteo, términos de uso, privacidad y devoluciones.
+- **Imágenes de prueba** de la casa, los interiores y el terreno, con galería ampliable (renders generados para la maqueta, no son fotografías reales).
+- Vista previa al compartir el enlace (imagen y descripción).
+
 ## Qué muestra
 - **Varios sorteos en curso a la vez** (SUV, moto, smartphone + notebook, dinero) y un sorteo anterior ya finalizado.
   Cada uno tiene su propio stock, precio, meta mínima, fecha y verificación.

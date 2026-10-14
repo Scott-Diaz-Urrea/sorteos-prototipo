@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>cierto — Sorteos verificables (prototipo)</title>
 <meta name="description" content="Prototipo clicable para revisión de flujo y revisión legal. Sin pagos reales ni premios.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="cierto — Sorteos verificables (prototipo)">
+<meta property="og:description" content="Gana una casa de 200 m² en una parcela de 5.000 m². Sorteos que se pueden comprobar. Prototipo con datos ficticios.">
+<meta property="og:image" content="https://scott-diaz-urrea.github.io/sorteos-prototipo/img/casa_frente.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
@@ -245,6 +250,33 @@ main:focus{outline:none}
 .gal{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
 .gal div{aspect-ratio:4/3;border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;color:var(--muted);font-size:.82rem;text-align:center;padding:8px}
 .plan{color:var(--ink)}.plan svg{display:block;width:100%;height:auto;max-width:520px;margin:0 auto}
+/* Fotos y galería */
+.art.has-photo{padding:0;background:#120a36}
+.art.has-photo img{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:3/2}
+.ccard.star .art.has-photo{min-height:260px}
+.ccard.star .art.has-photo img{aspect-ratio:auto;height:100%;min-height:260px}
+.prize img.photo{width:100%;height:auto;border-radius:22px;display:block;box-shadow:0 24px 50px rgba(0,0,0,.45);border:1px solid rgba(255,255,255,.18)}
+.chead .art.has-photo{border-radius:16px;overflow:hidden}
+.gal2{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.gal2 button{padding:0;border:0;background:none;cursor:zoom-in;border-radius:14px;overflow:hidden;position:relative;min-height:0}
+.gal2 img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;transition:transform .25s}
+.gal2 button:hover img{transform:scale(1.04)}
+.gal2 .cap{position:absolute;left:0;right:0;bottom:0;padding:22px 10px 8px;background:linear-gradient(transparent,rgba(10,6,30,.85));color:#fff;font-size:.82rem;font-weight:600;text-align:left}
+.lb{position:fixed;inset:0;z-index:90;background:rgba(8,5,24,.94);display:grid;grid-template-rows:1fr auto;place-items:center;padding:56px 16px 16px}
+.lb img{max-width:100%;max-height:100%;object-fit:contain;border-radius:12px}
+.lb .lbcap{color:#e6e1ff;text-align:center;padding:12px;font-weight:600}
+.lb button{position:absolute;border:0;background:rgba(255,255,255,.14);color:#fff;border-radius:50%;width:48px;height:48px;font-size:1.6rem;cursor:pointer;display:grid;place-items:center}
+.lb .lbx{top:10px;right:10px}.lb .prev{left:10px;top:50%}.lb .next{right:10px;top:50%}
+/* Tour guiado */
+.tourbtn{border:0;background:var(--cta);color:var(--cta-ink);font:inherit;font-weight:800;font-size:.85rem;padding:8px 14px;border-radius:999px;cursor:pointer;margin-left:6px;white-space:nowrap}
+.tour{position:fixed;left:50%;bottom:92px;transform:translateX(-50%);width:min(560px,calc(100vw - 24px));background:var(--surface);color:var(--ink);border:2px solid var(--gold);border-radius:18px;box-shadow:0 18px 50px rgba(0,0,0,.45);padding:16px 18px;z-index:85}
+.tour h3{margin:0 0 4px}.tour p{margin:0 0 12px;font-size:.95rem}
+.tour .tb{display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:space-between}
+.tour .dots{display:flex;gap:5px}.tour .dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}.tour .dots i.on{background:var(--brand)}
+.tour .btn{padding:9px 16px;min-height:40px}
+.tour-hl{outline:4px solid var(--gold)!important;outline-offset:5px;border-radius:14px;animation:hl 1.6s ease-in-out infinite}
+@keyframes hl{50%{outline-color:rgba(255,197,61,.3)}}
+.flinks{display:flex;flex-wrap:wrap;gap:6px 18px;margin:8px 0 10px}.flinks a{color:var(--muted)}
 /* Ticket */
 .tkts{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
 .tkt{--stub:132px;position:relative;display:grid;grid-template-columns:minmax(0,1fr) var(--stub);border-radius:20px;overflow:hidden;color:#fff;
@@ -292,12 +324,13 @@ main:focus{outline:none}
       <a href="#/como" data-r="como">Cómo funciona</a>
       <a href="#/verificar" data-r="verificar">Verificar sorteo</a>
       <a href="#/mis-tickets" data-r="mis-tickets">Mis tickets</a>
+      <button class="tourbtn" id="tourBtn" type="button">▶ Tour 2 min</button>
       <details class="demo"><summary>Modo demo ▾</summary><div><a href="#/admin">Panel interno</a><a href="#/legal">Revisión legal</a><a href="#/" data-reset>Reiniciar datos de demo</a></div></details>
     </nav>
   </div>
 </header>
 <main id="app" tabindex="-1"><noscript><div class="wrap block"><div class="card">Este prototipo necesita JavaScript activado.</div></div></noscript></main>
-<footer><div class="wrap"><b>cierto</b> · sorteos que se pueden comprobar.<br>Prototipo estático (HTML/JS). Los datos se guardan solo en tu navegador. Ningún valor mostrado es real. Esto no es asesoría legal ni una oferta.</div></footer>
+<footer><div class="wrap"><b>cierto</b> · sorteos que se pueden comprobar.<div class="flinks"><a href="#/bases">Bases y condiciones</a><a href="#/terminos">Términos de uso</a><a href="#/privacidad">Privacidad</a><a href="#/devoluciones">Devoluciones</a><a href="#/verificar">Verificar sorteo</a></div>Prototipo estático (HTML/JS). Los datos se guardan solo en tu navegador. Ningún valor mostrado es real. Esto no es asesoría legal ni una oferta.</div></footer>
 
 <script>
 "use strict";
@@ -387,11 +420,26 @@ const ART = {
 <path d="M260 100 C210 40 150 60 190 100 Z" fill="#ffc53d"/><path d="M260 100 C310 40 370 60 330 100 Z" fill="#ffd978"/></svg>`
 };
 
+function artHTML(c, cls = "") {
+  const svg = ART[c.art] || ART.gift;
+  if (!c.photo) return svg;
+  return `<img class="${cls}" src="${esc(c.photo)}" alt="Imagen de prueba: ${esc(c.short)}" decoding="async" onerror="this.hidden=true;this.nextElementSibling.hidden=false"><span hidden>${svg}</span>`;
+}
+const GALLERY = [
+  { src: "img/casa_frente.jpg", cap: "Exterior de la casa" },
+  { src: "img/casa_atardecer.jpg", cap: "Atardecer en la terraza" },
+  { src: "img/living.jpg", cap: "Living con vista al terreno" },
+  { src: "img/dormitorio.jpg", cap: "Dormitorio principal" },
+  { src: "img/terreno.jpg", cap: "Terreno y entorno" },
+  { src: "img/acceso.jpg", cap: "Acceso y cierre" },
+  { src: "img/vista_aerea.jpg", cap: "Vista aérea del terreno" }
+];
+
 /* ---------- Datos de demostración ---------- */
 const mkPacks = price => [[1, 0], [5, 10], [10, 20], [20, 30]].map(([q, d]) => ({ q, price: Math.round(price * q * (100 - d) / 100 / 10) * 10 }));
 const BEACON0 = "a3f1c9e07b52d4486e1f0b9c2d7a85133c64e9b0f7a21d58ce3b60947d1a8f25";
 const RAW = [
-  { id: "parcela", star: true, featured: true, name: "Casa de 200 m² en parcela de 5.000 m² (premio de ejemplo)", short: "Casa 200 m² + parcela 5.000 m²", headline: "Gana una casa de 200 m² en una parcela de 5.000 m²", art: "house", total: 12000, minSold: 9000, price: 10000, drawDate: "2026-12-19T20:00:00-03:00", ratio: 0.41, seedN: 55, status: "active", facts: { casa: 200, terreno: 5000 },
+  { id: "parcela", star: true, featured: true, name: "Casa de 200 m² en parcela de 5.000 m² (premio de ejemplo)", short: "Casa 200 m² + parcela 5.000 m²", headline: "Gana una casa de 200 m² en una parcela de 5.000 m²", art: "house", total: 12000, minSold: 9000, price: 10000, drawDate: "2026-12-19T20:00:00-03:00", ratio: 0.41, seedN: 55, status: "active", facts: { casa: 200, terreno: 5000 }, photo: "img/casa_frente.jpg", gallery: GALLERY,
     commit: "7362b7dc2a475839ded1afae81122460dfdf8acf3528b2143a4647a210dacc2c", demoSeed: "SEMILLA-DEMO-PARCELA", demoBeacon: "975276d7ab0ff056f923f76b33a2335922ef739d707c8c75de02a8b6b2855180", demoTotal: 9400 },
   { id: "suv", name: "SUV 0 km (premio de ejemplo)", short: "SUV 0 km", art: "car", total: 8000, minSold: 6000, price: 5000, drawDate: "2026-11-28T20:00:00-03:00", ratio: 0.62, seedN: 20261128, status: "active",
     commit: "6c99aa7326b7a7b3f5e8b8485fcb740e78839618097ce0c4ae0133b7ffd6d2e6", demoSeed: "SEMILLA-DEMO-2026-OCT", demoBeacon: BEACON0, demoTotal: 6850 },
@@ -401,7 +449,7 @@ const RAW = [
     commit: "3b34e4ef08893be19d2f37caea64bcef504d5564574fc6fa31ca52da3d5243e5", demoSeed: "SEMILLA-DEMO-TECH", demoBeacon: "550d91df2995af3df4782df103caff95b23b3bdd65a051546abf1d9c2764ef7b", demoTotal: 2100 },
   { id: "cash", name: "$2.000.000 en efectivo (ejemplo)", short: "$2.000.000 en efectivo", art: "cash", total: 6000, minSold: 3500, price: 1000, drawDate: "2026-12-12T20:00:00-03:00", ratio: 0.31, seedN: 33, status: "active",
     commit: "dcfee9a4c122c0fccd712d18d72004030918793c461825c760096eea0957d517", demoSeed: "SEMILLA-DEMO-CASH", demoBeacon: "955168c4d7607ef92e40a4df4ebc5bbde80e9ed249bb8c479b76f7b3f0590431", demoTotal: 5200 },
-  { id: "scooter", name: "Scooter eléctrico (sorteo anterior, ejemplo)", short: "Scooter eléctrico", art: "scooter", total: 3000, minSold: 2000, price: 2500, drawDate: "2026-09-26T20:00:00-03:00", ratio: 1, seedN: 44, status: "finished", winner: 1774,
+  { id: "scooter", name: "Scooter eléctrico (sorteo anterior, ejemplo)", short: "Scooter eléctrico", art: "scooter", total: 3000, minSold: 2000, price: 2500, drawDate: "2026-09-26T20:00:00-03:00", ratio: 1, seedN: 44, status: "finished", winner: 1774, closeM: 3000, closeListHash: "f38b961676696b26c53ba0a9c873b90dd6d9cbbdc266d72c3d2842e174cf8a25",
     commit: "612dc8fd0970183afc029355a57acd8e3145a36676393dba7194d80bfb6e0259", demoSeed: "SEMILLA-DEMO-SCOOTER", demoBeacon: "e332c02eb390f89bcb157bf075927b91a77497167cef539fc1e296f15a318b9a", demoTotal: 3000 }
 ].map(c => ({ ...c, packs: mkPacks(c.price) }));
 
@@ -411,7 +459,7 @@ function customContests() {
 }
 function allContests() {
   const d = store.get("draws", {}), draws = d && typeof d === "object" ? d : {};
-  return [...RAW, ...customContests()].map(c => draws[c.id] && c.status !== "finished" ? { ...c, status: "finished", winner: draws[c.id].winner } : c);
+  return [...RAW, ...customContests()].map(c => draws[c.id] && c.status !== "finished" ? { ...c, status: "finished", winner: draws[c.id].winner, closeM: draws[c.id].M, closeListHash: draws[c.id].listHash } : c);
 }
 const getContest = id => allContests().find(c => c.id === id);
 const activeContests = () => allContests().filter(c => c.status === "active");
@@ -444,7 +492,15 @@ function rollRandom(q) {
   while (out.length < q && guard++ < 50000) { const n = 1 + randInt(C.total); if (!sold.has(n) && !out.includes(n)) out.push(n); }
   return out.sort((a, b) => a - b);
 }
-async function winnerOf(c) { const h = await sha256(`${c.demoSeed}:${c.demoBeacon}:${c.demoTotal}`); return (BigInt("0x" + h) % BigInt(c.demoTotal) + 1n).toString(); }
+const soldList = c => [...soldSet(c)].sort((a, b) => a - b);
+async function drawFor(c, list = soldList(c)) {
+  const M = list.length;
+  if (!M) return null;
+  const listHash = await sha256(list.join(","));
+  const h = await sha256(`${c.demoSeed}:${c.demoBeacon}:${M}`);
+  const pos = Number(BigInt("0x" + h) % BigInt(M));
+  return { M, listHash, h, pos, winner: list[pos] };
+}
 
 function countdownHTML() {
   return `<div class="cd" data-cd role="timer" aria-label="Tiempo para el sorteo"><div><b data-u="d">--</b><span>días</span></div><div><b data-u="h">--</b><span>horas</span></div><div><b data-u="m">--</b><span>min</span></div><div><b data-u="s">--</b><span>seg</span></div></div>`;
@@ -472,7 +528,7 @@ function cardHTML(c) {
   const days = Math.ceil((new Date(c.drawDate) - Date.now()) / 864e5), fin = c.status === "finished", left = c.total - s;
   const badge = fin ? '<span class="cbadge">Finalizado</span>' : left <= 0 ? '<span class="cbadge bad">Agotado</span>' : pct >= 85 ? '<span class="cbadge hot">🔥 Últimos tickets</span>' : s >= c.minSold ? '<span class="cbadge ok">✓ Sorteo asegurado</span>' : "";
   const when = fin ? "Sorteado el " + fmtDate(c.drawDate) : days > 0 ? "Sorteo en " + days + " día" + (days > 1 ? "s" : "") : "Sorteo hoy";
-  return `<a class="ccard${c.star ? " star" : ""}" href="#/concurso?c=${encodeURIComponent(c.id)}"><div class="art">${ART[c.art] || ART.gift}${badge}</div>
+  return `<a class="ccard${c.star ? " star" : ""}" href="#/concurso?c=${encodeURIComponent(c.id)}"><div class="art${c.photo ? " has-photo" : ""}">${artHTML(c)}${badge}</div>
     <div class="cbody">${c.star ? '<span class="starflag">⭐ Sorteo estrella</span>' : ""}<h3>${esc(c.short)}</h3>${c.facts ? `<p class="small" style="margin:0 0 6px"><b>${num(c.facts.casa)} m²</b> construidos · <b>${num(c.facts.terreno)} m²</b> de terreno</p>` : ""}<p class="muted small" style="margin-bottom:10px">Ticket desde ${clp(c.price)} · ${when}</p>
     ${fin ? `<p style="margin:0 0 12px"><span class="winner" style="color:var(--brand)">Ganador: N° ${pad(c.winner)}</span></p>` : `<div class="progress sm" style="margin:6px 0 8px"><i style="width:${pct}%"></i><b style="left:${minPct}%"></b></div><p class="small muted" style="margin:0 0 12px">${num(s)} de ${num(c.total)} vendidos</p>`}
     <span class="btn block">${fin ? "Ver resultado" : left <= 0 ? "Ver detalle" : "Quiero mi ticket"}</span></div></a>`;
@@ -497,7 +553,19 @@ function fichaHTML(c) {
   <div class="card" style="margin-top:16px"><h3>Documentación que se publicará antes de abrir ventas</h3>
     <ul class="checks">${docs.map(d => `<li><span>☐</span><span>${d}</span><span class="chip warn">Pendiente (demo)</span></li>`).join("")}</ul>
     <p class="small muted" style="margin:10px 0 0">Compra con respaldo: cualquiera podrá revisar estos documentos antes de pagar.</p></div>
-  <div class="card" style="margin-top:16px"><h3>Galería</h3><div class="gal">${["Exterior de la casa", "Living y cocina", "Dormitorios", "Terreno y entorno", "Acceso y cierre", "Vista aérea"].map(t => `<div>${t}<br>(foto por incorporar)</div>`).join("")}</div></div></div>`;
+  <div class="card" style="margin-top:16px"><h3>Galería</h3>${c.gallery ? `<div class="gal2" id="gal2">${c.gallery.map((g, i) => `<button type="button" data-gi="${i}" aria-label="Ampliar: ${esc(g.cap)}"><img src="${esc(g.src)}" alt="${esc(g.cap)}" loading="lazy" decoding="async"><span class="cap">${esc(g.cap)}</span></button>`).join("")}</div><p class="small muted" style="margin:10px 0 0">Imágenes de prueba generadas para esta maqueta. Se reemplazarán por fotografías reales del inmueble.</p>` : `<div class="gal">${["Exterior de la casa", "Living y cocina", "Dormitorios", "Terreno y entorno", "Acceso y cierre", "Vista aérea"].map(t => `<div>${t}<br>(foto por incorporar)</div>`).join("")}</div>`}</div></div>`;
+}
+function openLightbox(items, i) {
+  const ov = document.createElement("div");
+  ov.className = "lb"; ov.setAttribute("role", "dialog"); ov.setAttribute("aria-label", "Galería de imágenes");
+  let k = i;
+  const draw = () => { ov.innerHTML = `<img src="${esc(items[k].src)}" alt="${esc(items[k].cap)}"><div class="lbcap">${esc(items[k].cap)} · ${k + 1} de ${items.length}</div><button class="lbx" data-x aria-label="Cerrar">✕</button><button class="prev" data-d="-1" aria-label="Anterior">‹</button><button class="next" data-d="1" aria-label="Siguiente">›</button>`; };
+  const go = d => { k = (k + d + items.length) % items.length; draw(); };
+  const key = e => { if (e.key === "Escape") close(); else if (e.key === "ArrowRight") go(1); else if (e.key === "ArrowLeft") go(-1); };
+  const close = () => { ov.remove(); document.removeEventListener("keydown", key); };
+  ov.addEventListener("click", e => { if (e.target === ov || e.target.closest("[data-x]")) return close(); const b = e.target.closest("[data-d]"); if (b) go(+b.dataset.d); });
+  draw(); document.body.appendChild(ov); document.addEventListener("keydown", key);
+  ov.querySelector("[data-x]").focus();
 }
 /* ---------- Ticket visual y correo ---------- */
 function codeSVG(seed, px = 84) {
@@ -655,7 +723,7 @@ const notFoundCard = (title, msg) => `<section class="block"><div class="wrap" s
 
 /* ---------- Router ---------- */
 const routes = {};
-const TITLES = { "": "Inicio", como: "Cómo funciona", sorteos: "Sorteos en curso", concurso: "Sorteo", checkout: "Datos y pago", ticket: "Tus tickets", "mis-tickets": "Recupera tus tickets", verificar: "Verificar sorteo", admin: "Panel interno", legal: "Revisión legal" };
+const TITLES = { "": "Inicio", como: "Cómo funciona", sorteos: "Sorteos en curso", concurso: "Sorteo", checkout: "Datos y pago", ticket: "Tus tickets", "mis-tickets": "Recupera tus tickets", verificar: "Verificar sorteo", admin: "Panel interno", legal: "Revisión legal", bases: "Bases y condiciones", terminos: "Términos de uso", privacidad: "Política de privacidad", devoluciones: "Política de devoluciones" };
 const has = (o, k) => Object.prototype.hasOwnProperty.call(o, k);
 function route() {
   const raw = location.hash.slice(2) || "";
@@ -705,7 +773,7 @@ routes[""] = app => {
       ${countdownHTML()}
       <div class="actions"><a class="btn big" href="#/concurso?c=${encodeURIComponent(F.id)}">Quiero mi ticket</a><a class="btn big glass" href="#/sorteos">Ver todos los sorteos</a></div>
     </div>
-    <div class="prize">${ART[F.art] || ART.gift}<span class="tag t1">Ticket desde ${clp(F.price)}</span><span class="tag t2">Sorteo verificable ✓</span><span class="note">Imagen referencial</span></div>`
+    <div class="prize">${F.photo ? artHTML(F, "photo") : (ART[F.art] || ART.gift)}<span class="tag t1">Ticket desde ${clp(F.price)}</span><span class="tag t2">Sorteo verificable ✓</span><span class="note">${F.photo ? "Imagen de prueba, generada para la maqueta" : "Imagen referencial"}</span></div>`
     : `<div><h1>No hay sorteos en curso</h1><p class="lead">Pronto abriremos uno nuevo. Mientras tanto, revisa los resultados anteriores.</p></div><div></div>`;
   app.innerHTML = `
   <section class="hero"><div class="wrap">${heroHTML}</div></section>
@@ -731,7 +799,7 @@ routes[""] = app => {
   <section class="block"><div class="wrap">
     <div class="verify-teaser">
       <div><span class="badge">No tienes que confiar en nosotros</span><h2>Un sorteo que cualquiera puede comprobar</h2><p>Antes de vender el primer ticket de cada sorteo publicamos una huella digital. Cuando se sortea, la revelamos y tú recalculas el resultado en tu propio navegador.</p><a class="btn" href="#/verificar${F ? "?c=" + encodeURIComponent(F.id) : ""}">Probar el verificador</a></div>
-      <div class="hashbox"><b>Compromiso publicado${F ? " (" + esc(F.short) + ")" : ""}:</b><br>${F ? F.commit : "—"}<br><br><b>Resultado =</b> SHA-256(semilla : valor público : total) mod total + 1</div>
+      <div class="hashbox"><b>Compromiso publicado${F ? " (" + esc(F.short) + ")" : ""}:</b><br>${F ? F.commit : "—"}<br><br><b>Resultado =</b> ticket en la posición SHA-256(semilla : valor público : cantidad) mod cantidad, de la lista ordenada de tickets vendidos</div>
     </div>
   </div></section>
   ${fin.length ? `<section class="block" style="padding-top:8px"><div class="wrap"><h2>Sorteos anteriores</h2><p class="muted">Todos con su resultado verificable.</p><div class="cgrid">${fin.map(cardHTML).join("")}</div></div></section>` : ""}
@@ -775,7 +843,7 @@ routes["concurso"] = (app, params) => {
   if (!found) { app.innerHTML = notFoundCard("Sorteo no encontrado", "Ese sorteo no existe o ya no está disponible."); return; }
   useContest(found.id);
   if (sel.cid !== C.id) sel = { ...blankSel(C.id), sort: sel.sort };
-  const art = `<div class="art"${C.star ? ' style="width:min(100%,300px)"' : ""}>${ART[C.art] || ART.gift}</div>`;
+  const art = `<div class="art${C.photo ? " has-photo" : ""}"${C.star ? ' style="width:min(100%,' + (C.photo ? 380 : 300) + 'px)"' : ""}>${artHTML(C)}</div>`;
   const others = activeContests().filter(c => c.id !== C.id);
   if (C.status === "finished") {
     app.innerHTML = `<section class="block"><div class="wrap" style="max-width:760px">
@@ -893,6 +961,9 @@ routes["concurso"] = (app, params) => {
   };
   $("#go").onclick = () => { sel.reservedAt = Date.now(); location.hash = "#/checkout"; };
   $("#toFicha")?.addEventListener("click", e => { e.preventDefault(); $("#ficha")?.scrollIntoView({ behavior: "smooth" }); });
+  $("#gal2")?.addEventListener("click", e => { const b = e.target.closest("[data-gi]"); if (b) openLightbox(C.gallery, +b.dataset.gi); });
+  const galImgs = $$("#gal2 img");
+  if (galImgs.length) setTimeout(() => galImgs.forEach(i => { i.loading = "eager"; }), 1500);
   refresh();
 };
 
@@ -920,7 +991,7 @@ routes["checkout"] = app => {
           <h3 style="margin:8px 0 12px">¿Cómo quieres pagar?</h3>
           <div class="paytiles">${pays.map((m, i) => `<label class="paytile"><input type="radio" name="pay" value="${m[0]}" ${i === 0 ? "checked" : ""}><i style="background:${m[1]}">${m[2]}</i>${m[0]}</label>`).join("")}</div>
           <label style="display:flex;align-items:flex-start;margin-bottom:10px"><input type="checkbox" name="edad" required style="margin-top:5px"> Declaro ser mayor de 18 años.</label>
-          <label style="display:flex;align-items:flex-start;margin-bottom:10px"><input type="checkbox" name="bases" required style="margin-top:5px"> Acepto las <a href="#/legal">bases y condiciones</a> de este sorteo (documento de ejemplo).</label>
+          <label style="display:flex;align-items:flex-start;margin-bottom:10px"><input type="checkbox" name="bases" required style="margin-top:5px"> Acepto las <a href="#/bases?c=${encodeURIComponent(C.id)}" target="_blank" rel="noopener">bases y condiciones</a> de este sorteo y los <a href="#/terminos" target="_blank" rel="noopener">términos de uso</a> (borradores de ejemplo).</label>
           <div class="err" id="eChk" hidden role="alert">Marca ambas casillas para continuar.</div>
           <button class="btn big block" type="submit">Pagar ${clp(p.price)} (simulado)</button>
           <p class="center small muted" style="margin:12px 0 0">🔒 Pago seguro. En este prototipo no se cobra nada.</p>
@@ -1054,6 +1125,8 @@ routes["verificar"] = (app, params) => {
   const all = allContests();
   const c = all.find(x => x.id === params.c) || all.find(x => x.featured) || all[0];
   const fin = c.status === "finished";
+  const list = soldList(c);
+  const pubHash = fin ? c.closeListHash || null : null;
   app.innerHTML = `
   <section class="block"><div class="wrap" style="max-width:820px">
     <h1 style="font-size:2rem">Verifica el sorteo tú mismo</h1>
@@ -1061,45 +1134,67 @@ routes["verificar"] = (app, params) => {
     <label class="f" style="max-width:420px">Sorteo<select id="csel">${all.map(x => `<option value="${esc(x.id)}" ${x.id === c.id ? "selected" : ""}>${esc(x.short)}${x.status === "finished" ? " (finalizado)" : ""}</option>`).join("")}</select></label>
     <div class="card"><div class="steps">
       <div class="st"><div><b>Antes de vender:</b> publicamos el <i>compromiso</i>, la huella SHA-256 de una semilla secreta. Desde la huella no se puede deducir la semilla.</div></div>
-      <div class="st"><div><b>Al cerrar ventas:</b> se congela el total de tickets vendidos.</div></div>
+      <div class="st"><div><b>Al cerrar ventas:</b> se congela la <b>lista ordenada de tickets vendidos</b> y se publica su huella y su cantidad (M).</div></div>
       <div class="st"><div><b>El día del sorteo:</b> se toma un valor público externo (<i>beacon</i>) que nadie controla.</div></div>
-      <div class="st"><div><b>Resultado:</b> N° ganador = SHA-256(semilla : beacon : total) mod total + 1. Revelamos la semilla y tú lo recalculas.</div></div>
+      <div class="st"><div><b>Resultado:</b> posición = SHA-256(semilla : beacon : M) mod M. Gana el ticket que ocupa esa posición en la lista. Revelamos la semilla y tú lo recalculas.</div></div>
     </div></div>
     <div class="card" style="margin-top:16px">
       <h2 style="font-size:1.3rem">Verificador: ${esc(c.short)}</h2>
-      ${fin ? `<div class="box ok-box" style="margin-bottom:12px"><b>Resultado oficial: N° ${pad(c.winner)}</b><br><span class="small muted">Verifica abajo que coincide.</span></div>` : `<div class="box warn-box" style="margin-bottom:12px"><b>Este sorteo aún no se realiza.</b><br><span class="small muted">Los datos de abajo son un ejemplo de cómo se verá la revelación.</span></div>`}
+      ${fin ? `<div class="box ok-box" style="margin-bottom:12px"><b>Resultado oficial: ticket N° ${pad(c.winner)}</b><br><span class="small muted">Verifica abajo que coincide.</span></div>` : `<div class="box warn-box" style="margin-bottom:12px"><b>Este sorteo aún no se realiza.</b><br><span class="small muted">Los datos de abajo son un ejemplo con los tickets vendidos hasta hoy.</span></div>`}
       <p class="small muted" style="margin-bottom:4px">Compromiso publicado antes de abrir ventas:</p>
       <p class="mono">${esc(c.commit)}</p>
       <label class="f">Semilla revelada<input id="seed" value="${esc(c.demoSeed)}"></label>
       <label class="f">Valor público (beacon)<input id="beacon" value="${esc(c.demoBeacon)}"></label>
-      <label class="f">Total de tickets vendidos al cierre<input id="tot" type="number" value="${c.demoTotal}"></label>
-      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="chk">Verificar</button><button class="btn ghost" id="tamper">Alterar la semilla (probar)</button></div>
+      <div class="box" style="margin:4px 0 14px">
+        <b>Lista de tickets vendidos al cierre</b><br>
+        <span class="small muted"><span id="lm"></span> tickets · huella SHA-256: <span class="mono" id="lh">calculando…</span></span>
+        ${pubHash ? `<p class="small muted" style="margin:8px 0 0">Huella publicada al cierre: <span class="mono">${esc(pubHash)}</span></p>` : `<p class="small muted" style="margin:8px 0 0">La huella oficial se publicará al cerrar las ventas. La de arriba es la de hoy, a modo de ejemplo.</p>`}
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="btn ghost" id="seeList" type="button">Ver lista</button><button class="btn ghost" id="dlList" type="button">Descargar lista (.csv)</button></div>
+        <div id="listBox" class="mono" hidden style="max-height:150px;overflow:auto;margin-top:8px"></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" id="chk">Verificar</button><button class="btn ghost" id="tamper">Alterar la semilla (probar)</button><button class="btn ghost" id="tamperList">Quitar un ticket de la lista (probar)</button></div>
       <div id="out" aria-live="polite" style="margin-top:16px"></div>
     </div>
   </div></section>`;
+  let work = list.slice();
+  const refreshList = async () => { $("#lm").textContent = num(work.length); $("#lh").textContent = work.length ? await sha256(work.join(",")) : "—"; };
+  refreshList().catch(() => { $("#lh").textContent = "no disponible en esta conexión"; });
   $("#csel").addEventListener("change", e => { location.hash = "#/verificar?c=" + encodeURIComponent(e.target.value); });
+  $("#seeList").onclick = () => { const bx = $("#listBox"); bx.hidden = !bx.hidden; if (!bx.hidden) bx.textContent = work.slice(0, 400).map(pad).join(" · ") + (work.length > 400 ? ` … (y ${num(work.length - 400)} más; descarga la lista completa)` : ""); };
+  $("#dlList").onclick = () => {
+    const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["ticket\n" + work.join("\n") + "\n"], { type: "text/csv" }));
+    a.download = "tickets-vendidos-" + c.id + ".csv"; document.body.appendChild(a); a.click(); a.remove();
+  };
   const run = async () => {
-    const seed = $("#seed").value, beacon = $("#beacon").value, tot = Number($("#tot").value);
+    const seed = $("#seed").value, beacon = $("#beacon").value;
     if (!seed.trim() || !beacon.trim()) return toast("Completa la semilla y el valor público.");
-    if (!Number.isInteger(tot) || tot < 1 || tot > 1e9) return toast("El total debe ser un número entero entre 1 y 1.000.000.000.");
-    let commit, h, win;
+    if (!work.length) return toast("Este sorteo aún no tiene tickets vendidos.");
+    let commit, listHash, h, pos, win;
     try {
-      commit = await sha256(seed); h = await sha256(`${seed}:${beacon}:${tot}`);
-      win = (BigInt("0x" + h) % BigInt(tot) + 1n).toString();
+      commit = await sha256(seed); listHash = await sha256(work.join(","));
+      h = await sha256(`${seed}:${beacon}:${work.length}`);
+      pos = Number(BigInt("0x" + h) % BigInt(work.length)); win = work[pos];
     } catch (err) {
       $("#out").innerHTML = `<div class="box warn-box">Tu navegador no permite calcular la huella en esta conexión. Abre el sitio desde su enlace https.</div>`;
       return;
     }
-    const match = commit === c.commit;
+    const match = commit === c.commit, listOk = pubHash ? listHash === pubHash : null;
+    const valid = match && listOk !== false;
+    const official = fin && valid ? win === c.winner : null;
+    $("#refresh") && refreshList();
     $("#out").innerHTML = `
-      <div class="box ${match ? "ok-box" : "bad-box"}"><b>${match ? "✓ La semilla coincide con el compromiso publicado" : "✗ La semilla NO coincide con el compromiso: el resultado no es válido"}</b>
+      <div class="box ${match ? "ok-box" : "bad-box"}"><b>${match ? "✓ 1. La semilla coincide con el compromiso publicado" : "✗ 1. La semilla NO coincide con el compromiso: el resultado no es válido"}</b>
       <p class="mono muted" style="margin:8px 0 0">SHA-256(semilla) = ${commit}</p></div>
-      <div class="box" style="margin-top:10px"><b style="font-size:1.2rem">Número ganador calculado: ${match ? "N° " + pad(win) : "—"}</b>
-      ${match && fin ? `<p class="small" style="margin:6px 0 0">${String(win) === String(c.winner) ? "✓ Coincide con el resultado oficial." : "✗ No coincide con el resultado oficial."}</p>` : ""}
-      <p class="mono muted" style="margin:8px 0 0">SHA-256(semilla:beacon:total) = ${h}</p></div>`;
+      <div class="box ${listOk === false ? "bad-box" : listOk ? "ok-box" : ""}" style="margin-top:10px"><b>${listOk === null ? "2. Lista de ${num(work.length)} tickets (su huella oficial aún no está publicada: es un ejemplo)".replace("${num(work.length)}", num(work.length)) : listOk ? "✓ 2. La lista coincide con la huella publicada al cierre" : "✗ 2. La lista NO coincide con la huella publicada: se alteró un ticket"}</b>
+      <p class="mono muted" style="margin:8px 0 0">SHA-256(lista) = ${listHash}</p></div>
+      <div class="box" style="margin-top:10px"><b style="font-size:1.2rem">3. Ticket ganador calculado: ${valid ? "N° " + pad(win) : "—"}</b>
+      ${valid ? `<p class="small" style="margin:6px 0 0">Posición ${num(pos + 1)} de ${num(work.length)} en la lista ordenada.</p>` : ""}
+      ${official !== null ? `<p class="small" style="margin:6px 0 0">${official ? "✓ Coincide con el resultado oficial." : "✗ No coincide con el resultado oficial."}</p>` : ""}
+      <p class="mono muted" style="margin:8px 0 0">SHA-256(semilla:beacon:M) = ${h}</p></div>`;
   };
   $("#chk").onclick = run;
   $("#tamper").onclick = () => { $("#seed").value = c.demoSeed + "X"; run(); };
+  $("#tamperList").onclick = async () => { work = list.slice(1); await refreshList(); run(); };
 };
 
 /* ---------- Panel interno ---------- */
@@ -1162,12 +1257,13 @@ routes["admin"] = app => {
         <p class="muted small">Cada paso queda en la bitácora. La semilla solo se revela al final y se compara con el compromiso publicado. En esta demo, al sortear, el sorteo pasa a "Finalizado" en el sitio público.</p>
         <ol class="qs" id="chk" style="list-style:none;padding:0">
           <li><label><input type="checkbox"> Meta mínima alcanzada (hoy: ${num(s)} de ${num(c.minSold)}${s >= c.minSold ? "" : " — en producción no se podría sortear; se devolvería el dinero"})</label></li>
-          <li><label><input type="checkbox"> Ventas cerradas y total congelado: ${num(c.demoTotal)}</label></li>
+          <li><label><input type="checkbox"> Ventas cerradas y lista congelada: ${num(s)} tickets vendidos</label></li>
           <li><label><input type="checkbox"> Acta notarial y transmisión en vivo listas</label></li>
           <li><label><input type="checkbox"> Valor público (beacon) obtenido: <span class="mono">${esc(c.demoBeacon.slice(0, 16))}…</span></label></li>
         </ol>
         <label class="f">Doble confirmación: escribe <b>SORTEAR</b><input id="conf" autocomplete="off"></label>
-        <button class="btn danger" id="run" disabled>Ejecutar sorteo (demo)</button>
+        ${s === 0 ? '<div class="box warn-box" style="margin-bottom:10px">Este sorteo aún no tiene tickets vendidos: no se puede ejecutar.</div>' : ""}
+        <button class="btn danger" id="run" disabled data-lock="${s === 0 ? 1 : 0}">Ejecutar sorteo (demo)</button>
         <div id="dout" aria-live="polite" style="margin-top:14px"></div></div>`;
     },
     sup() {
@@ -1204,14 +1300,15 @@ routes["admin"] = app => {
     });
     if (k === "draw" && $("#run")) {
       $("#dsel").addEventListener("change", e => { drawSel = e.target.value; show("draw"); });
-      const upd = () => { $("#run").disabled = !($("#conf").value === "SORTEAR" && $$("#chk input").every(i => i.checked)); };
+      const upd = () => { $("#run").disabled = $("#run").dataset.lock === "1" || !($("#conf").value === "SORTEAR" && $$("#chk input").every(i => i.checked)); };
       $("#conf").addEventListener("input", upd); $$("#chk input").forEach(i => i.addEventListener("change", upd));
       $("#run").onclick = async () => {
         $("#run").disabled = true; $("#conf").disabled = true; $$("#chk input").forEach(i => i.disabled = true);
-        const c = getContest(drawSel), w = await winnerOf(c);
+        const c = getContest(drawSel), r = await drawFor(c);
+        if (!r) { toast("No hay tickets vendidos para sortear."); return; }
         const d = store.get("draws", {}), draws = d && typeof d === "object" ? d : {};
-        draws[c.id] = { winner: Number(w), at: new Date().toISOString() }; store.set("draws", draws);
-        $("#dout").innerHTML = `<div class="box ok-box"><b>Número ganador: N° ${pad(w)}</b><p class="small muted" style="margin:6px 0 0">Resultado registrado en bitácora. "${esc(c.short)}" ahora figura como finalizado en el sitio público. Compruébalo en <a href="#/verificar?c=${encodeURIComponent(c.id)}">Verificar sorteo</a>.</p></div>`;
+        draws[c.id] = { winner: r.winner, M: r.M, listHash: r.listHash, at: new Date().toISOString() }; store.set("draws", draws);
+        $("#dout").innerHTML = `<div class="box ok-box"><b>Número ganador: N° ${pad(r.winner)}</b> <span class="small muted">(posición ${num(r.pos + 1)} de ${num(r.M)})</span><p class="small muted" style="margin:6px 0 0">Resultado registrado en bitácora. "${esc(c.short)}" ahora figura como finalizado en el sitio público. Compruébalo en <a href="#/verificar?c=${encodeURIComponent(c.id)}">Verificar sorteo</a>.</p></div>`;
       };
     }
     if (k === "sup") $("#sf").addEventListener("submit", e => {
@@ -1225,6 +1322,70 @@ routes["admin"] = app => {
   $(".tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) show(b.dataset.t); });
   show("res");
 };
+
+/* ---------- Páginas legales (borradores de ejemplo) ---------- */
+function legalDoc(app, title, intro, sections, top = "") {
+  app.innerHTML = `<section class="block"><div class="wrap" style="max-width:820px">
+    <h1 style="font-size:2rem">${esc(title)}</h1>
+    <div class="box warn-box" style="margin:12px 0 20px"><b>Borrador de ejemplo.</b> Este texto es una propuesta para la maqueta: no está revisado por la asesoría legal y no tiene validez jurídica. Lo que aparece entre corchetes está por definir.</div>
+    ${top}${intro ? `<p class="muted">${intro}</p>` : ""}
+    ${sections.map((x, i) => `<h2 style="font-size:1.25rem;margin-top:26px">${i + 1}. ${esc(x.h)}</h2>${(x.p || []).map(p => `<p>${p}</p>`).join("")}${x.ul ? `<ul>${x.ul.map(li => `<li>${li}</li>`).join("")}</ul>` : ""}`).join("")}
+    <p class="small muted" style="margin-top:26px">Versión de borrador · octubre de 2026 · <a href="#/legal">Documento para revisión legal</a></p>
+    <div class="noprint" style="margin-top:12px"><button class="btn alt" onclick="window.print()">Imprimir / PDF</button></div>
+  </div></section>`;
+}
+routes["bases"] = (app, params) => {
+  const all = allContests();
+  const c = all.find(x => x.id === params.c) || all.find(x => x.featured) || all[0];
+  const packs = c.packs.map(p => `${p.q} ticket${p.q > 1 ? "s" : ""}: ${clp(p.price)}`).join(" · ");
+  const prize = c.facts
+    ? `Un inmueble: una casa construida de <b>${num(c.facts.casa)} m²</b> sobre un terreno de <b>${num(c.facts.terreno)} m²</b>, ubicado en [dirección y comuna por definir], inscrito a fojas [por definir] del Conservador de Bienes Raíces de [por definir], rol de avalúo [por definir]. Antes de abrir las ventas, el Organizador acreditará que el inmueble está a su nombre y libre de hipotecas, gravámenes y prohibiciones, con la documentación indicada en la ficha del premio.`
+    : `El premio es <b>${esc(c.name)}</b>, según su descripción en la página del sorteo. [Características y valor por definir.]`;
+  const delivery = c.facts
+    ? ["El Organizador notificará al ganador por correo y teléfono, y le pedirá verificar su identidad. [Plazo para reclamar el premio por definir.]", "La entrega se formalizará mediante escritura pública y su inscripción en el Conservador de Bienes Raíces, en un plazo de [por definir].", "Los gastos notariales, impuestos y contribuciones asociados serán de cargo de [por definir con la asesoría legal].", "La entrega y la evidencia asociada se publicarán en el sitio."]
+    : ["El Organizador notificará al ganador por correo y teléfono, y le pedirá verificar su identidad. [Plazo para reclamar el premio por definir.]", "La entrega se coordinará con el ganador y quedará documentada. [Forma y plazo por definir.]", "Los impuestos y gastos asociados serán de cargo de [por definir con la asesoría legal]."];
+  legalDoc(app, "Bases y condiciones: " + c.short, "Estas bases regulan la participación en el sorteo <b>" + esc(c.name) + "</b>. Al comprar un ticket, el participante declara conocerlas y aceptarlas.", [
+    { h: "Organizador", p: ["Organiza el sorteo [razón social del organizador], RUT [por definir], con domicilio en [por definir] (el \"Organizador\")."] },
+    { h: "Premio", p: [prize] },
+    { h: "Cómo participar", ul: [`Cada ticket digital tiene un número único y da una participación. Precio por ticket: <b>${clp(c.price)}</b>. Packs: ${packs}.`, "Pueden participar personas naturales mayores de 18 años. [Restricciones adicionales por definir.]", "El participante puede elegir sus números o recibirlos al azar. Los números se reservan por 10 minutos mientras se completa el pago.", "No hay límite de tickets por persona. [A definir con la asesoría legal.]"] },
+    { h: "Cantidad de tickets, meta mínima y fecha", p: [`Se emitirán hasta <b>${num(c.total)}</b> tickets. El sorteo se realizará el <b>${fmtDate(c.drawDate, { day: "numeric", month: "long", year: "numeric" })}</b> si se venden al menos <b>${num(c.minSold)}</b> tickets (meta mínima). [Cierre de ventas y hora exacta por definir.]`, `Si no se alcanza la meta mínima, el sorteo no se realiza y se devuelve el 100% de lo pagado, según la <a href="#/devoluciones">política de devoluciones</a>.`] },
+    { h: "Mecánica del sorteo", ul: [`Antes de abrir las ventas se publica el compromiso: la huella SHA-256 de una semilla secreta. Compromiso de este sorteo: <span class="mono">${esc(c.commit)}</span>`, "Al cerrar las ventas se congela la lista ordenada de tickets vendidos y se publican su huella SHA-256 y su cantidad (M).", "El día del sorteo se toma un valor público externo, de una fuente anunciada de antemano. [Fuente y ronda por definir, por ejemplo la red drand.]", "Se calcula h = SHA-256(semilla : valor público : M). La posición ganadora es h mod M, y gana el ticket que ocupa esa posición en la lista ordenada.", `Se revela la semilla y cualquier persona puede comprobar el resultado en la <a href="#/verificar?c=${encodeURIComponent(c.id)}">página de verificación</a>. El sorteo se transmitirá en vivo [plataforma por definir] y se levantará un acta ante notario [por definir].`] },
+    { h: "Ganador y entrega del premio", ul: delivery },
+    { h: "Exclusiones", p: ["Quedan excluidos del sorteo [personas relacionadas con el Organizador y otras restricciones, por definir]."] },
+    { h: "Responsabilidad", p: ["El Organizador no responde por fallas de servicios de terceros fuera de su control (por ejemplo, conectividad o pasarelas de pago), sin perjuicio de los derechos del consumidor y de la política de devoluciones. [Redacción por revisar por la asesoría legal.]"] },
+    { h: "Datos personales", p: [`El tratamiento de los datos de los participantes se rige por la <a href="#/privacidad">política de privacidad</a>.`] },
+    { h: "Ley aplicable y jurisdicción", p: ["[Por definir con la asesoría legal.]"] }
+  ], `<label class="f" style="max-width:420px">Bases del sorteo<select id="bsel">${all.map(x => `<option value="${esc(x.id)}" ${x.id === c.id ? "selected" : ""}>${esc(x.short)}</option>`).join("")}</select></label>`);
+  $("#bsel").addEventListener("change", e => { location.hash = "#/bases?c=" + encodeURIComponent(e.target.value); });
+};
+routes["terminos"] = app => legalDoc(app, "Términos de uso", "Estos términos regulan el uso del sitio y la compra de tickets.", [
+  { h: "Qué es este sitio", p: ["cierto es una plataforma donde se venden tickets digitales que participan en sorteos. Cada sorteo tiene sus propias bases."] },
+  { h: "Compra de tickets", ul: ["Para comprar se necesita nombre, RUT y correo. No se necesita crear una cuenta.", "Al elegir tus números, quedan reservados por 10 minutos. Si no se completa el pago, vuelven a estar disponibles.", "El pago se realiza en la pasarela elegida. cierto no recibe ni guarda datos de tarjetas.", "Cada pago aprobado genera sus tickets una sola vez, con un comprobante único."] },
+  { h: "Tus tickets", p: ["Los tickets se muestran al instante y se envían por correo. Si no los recibes, puedes recuperarlos en \"Mis tickets\" con tu RUT o correo."] },
+  { h: "Edad mínima", p: ["Solo pueden comprar personas mayores de 18 años. [Mecanismo de verificación por definir.]"] },
+  { h: "Uso correcto", ul: ["Está prohibido usar programas automáticos para reservar o comprar números.", "El Organizador puede anular compras que infrinjan estos términos y devolver lo pagado. [Detalle por definir.]"] },
+  { h: "Propiedad intelectual", p: ["Los textos, diseños y marca de cierto pertenecen a su titular. [Titular por definir.]"] },
+  { h: "Cambios a estos términos", p: ["Podemos actualizarlos. La versión vigente es la publicada en el sitio. [Procedimiento de aviso por definir.]"] },
+  { h: "Contacto", p: ["[Correo y medios de contacto por definir.]"] }
+]);
+routes["privacidad"] = app => legalDoc(app, "Política de privacidad", "Explica qué datos personales recopilamos, para qué los usamos y cuáles son tus derechos.", [
+  { h: "Responsable", p: ["[Razón social, RUT y domicilio del responsable por definir.] Contacto para temas de datos: [por definir]."] },
+  { h: "Qué datos recopilamos", ul: ["Nombre, RUT y correo electrónico (necesarios para emitir tus tickets).", "Teléfono, solo si decides entregarlo.", "Datos de la compra: sorteo, números, monto, medio de pago y fecha. No guardamos datos de tarjetas.", "Datos técnicos mínimos para seguridad y prevención de fraude (por ejemplo, dirección IP)."] },
+  { h: "Para qué los usamos", ul: ["Emitir y entregar tus tickets y comprobantes.", "Atender consultas, reenvíos y reembolsos.", "Cumplir obligaciones legales y tributarias.", "Proteger el sitio contra fraude y abuso.", "Enviarte avisos sobre tu compra y sobre el sorteo en que participas."] },
+  { h: "Con quién los compartimos", ul: ["Pasarela de pago, para procesar el cobro.", "Proveedor de correo, para enviarte los tickets.", "Notario y autoridades, cuando la ley lo exija o para formalizar el sorteo.", "No vendemos tus datos."] },
+  { h: "Cuánto tiempo los guardamos", p: ["[Plazo por definir con la asesoría legal.] Como criterio, se conservarán mientras sean necesarios para cumplir el sorteo, resolver reclamos y cumplir las obligaciones legales."] },
+  { h: "Tus derechos", p: ["Puedes pedir acceso, rectificación o eliminación de tus datos, oponerte a ciertos usos y solicitar su portabilidad, según la normativa aplicable (Ley 19.628 y Ley 21.719; fechas de vigencia y alcance por confirmar con la asesoría legal). Para ejercerlos, escríbenos a [correo por definir]."] },
+  { h: "Seguridad", p: ["Usamos conexión cifrada, accesos restringidos por rol y registros de auditoría. Ningún sistema es infalible; si ocurre un incidente que te afecte, te avisaremos según la ley."] },
+  { h: "Cookies y almacenamiento local", p: ["Este prototipo solo usa almacenamiento local del navegador para recordar tus compras de demostración. No usa cookies de publicidad. [Política definitiva por definir.]"] }
+]);
+routes["devoluciones"] = app => legalDoc(app, "Política de devoluciones", "Explica cuándo y cómo se devuelve el dinero.", [
+  { h: "Si el sorteo no alcanza la meta mínima", p: ["Cada sorteo tiene una meta mínima de tickets. Si no se alcanza, el sorteo no se realiza y se devuelve el <b>100%</b> de lo pagado, al mismo medio de pago, en un plazo de [días hábiles por definir]. No necesitas hacer ningún trámite."] },
+  { h: "Si pagas y tu reserva ya venció", p: ["Si tu pago llega cuando la reserva de números expiró y alguno ya fue tomado por otra persona, se reembolsa automáticamente la compra y te avisamos por correo."] },
+  { h: "Cobros duplicados o errores", p: ["Si se te cobra dos veces o se emite un ticket por error, devolvemos la diferencia. Escríbenos con tu número de pedido a [correo por definir]."] },
+  { h: "Derecho de retracto", p: ["[Por definir con la asesoría legal si aplica y en qué condiciones.]"] },
+  { h: "Después del sorteo", p: ["Una vez realizado el sorteo, los tickets no son reembolsables, salvo error comprobado del sistema. [Por definir.]"] },
+  { h: "Cómo pedir ayuda", ul: ["Recupera tus tickets en \"Mis tickets\" con tu RUT o correo.", "Si algo no cuadra, soporte puede ver tu compra y corregirla. Contacto: [por definir]."] }
+]);
 
 /* ---------- Revisión legal ---------- */
 routes["legal"] = app => {
@@ -1278,6 +1439,79 @@ routes["legal"] = app => {
     </div>
   </div></section>`;
 };
+
+/* ---------- Tour guiado ---------- */
+let tour = null;
+async function tourOrder() {
+  let o = orders().find(x => x.id === "ORD-TOUR");
+  if (o) return o;
+  const c = useContest("parcela");
+  const numbers = rollRandom(5);
+  o = { id: "ORD-TOUR", at: new Date().toISOString(), cid: c.id, cname: c.short, nombre: "Visita Demo", rut: "111111111", email: "demo@example.com", pay: "Webpay Plus", q: 5, total: packOf(5).price, numbers, mode: "azar", tour: true };
+  o.receipt = await sha256([o.id, o.at, o.cid, o.rut, o.numbers.join(","), o.total].join("|"));
+  const all = orders(); all.push(o); store.set("orders", all);
+  return o;
+}
+const TOUR_STEPS = [
+  { route: "#/", sel: ".hero", title: "Bienvenido a cierto", text: "Esta es la portada: el sorteo estrella (una casa de 200 m² en una parcela de 5.000 m²), su cuenta regresiva y los datos clave. Todo funciona igual en el celular." },
+  { route: "#/sorteos", sel: "#list", title: "Varios sorteos a la vez", text: "Cada sorteo tiene su propio stock, precio, meta mínima y fecha. Se pueden ordenar por fecha, precio o avance." },
+  { route: "#/concurso?c=parcela", sel: "#packs", title: "Elige tu pack", text: "Los packs grandes tienen descuento. Más abajo eliges tus números, al azar o a mano, y ves tu probabilidad antes de pagar." },
+  { route: "#/concurso?c=parcela", sel: "#ficha", scroll: true, title: "La ficha del premio", text: "Plano a escala, qué incluye, la documentación que se publica antes de vender y una galería (imágenes de prueba que puedes ampliar)." },
+  { prep: async () => { const c = useContest("parcela"); sel = { ...blankSel(c.id), q: 5, mode: "azar", numbers: rollRandom(5), reservedAt: Date.now() }; }, route: "#/checkout", sel: "#f", title: "Pago sin crear cuenta", text: "Datos mínimos y medios de pago locales. Los números quedan reservados 10 minutos. Aquí todo es simulado y ya cargamos datos de ejemplo.",
+    after: async () => { const f = $("#f"); if (f) { f.nombre.value = "Visita Demo"; f.rut.value = "11.111.111-1"; f.email.value = "demo@example.com"; f.edad.checked = true; f.bases.checked = true; } } },
+  { prep: tourOrder, route: "#/ticket?id=ORD-TOUR", sel: "#tkts", title: "Tus tickets", text: "Cada número es un ticket con comprobante único. Se pueden recuperar con el RUT o el correo." },
+  { route: "#/ticket?id=ORD-TOUR", sel: "#resend", title: "El correo de confirmación", text: "Así llega al correo del comprador. Se puede copiar o descargar como .eml para probarlo en una bandeja real.",
+    after: async () => { const o = orders().find(x => x.id === "ORD-TOUR"); if (o) showEmail(o, getContest(o.cid)); } },
+  { route: "#/verificar?c=scooter", sel: "#chk", title: "Verifica el sorteo", text: "Cualquiera puede recalcular el resultado. Prueba \"Alterar la semilla\" o \"Quitar un ticket de la lista\": la verificación falla.", after: async () => { $("#chk")?.click(); } },
+  { route: "#/admin", sel: ".tabs", title: "Panel interno", text: "El equipo ve ventas y alertas, crea sorteos, ejecuta el sorteo con doble confirmación, atiende soporte y revisa la auditoría." },
+  { route: "#/bases?c=parcela", sel: "h1", title: "Bases y documentos legales", text: "Cada sorteo tiene sus bases (borrador de ejemplo). En el pie de página están los términos, la privacidad y las devoluciones; en \"Modo demo\" está el documento para la asesoría legal." }
+];
+function tourPanel() {
+  let p = $("#tourPanel");
+  if (!p) { p = document.createElement("aside"); p.id = "tourPanel"; p.className = "tour"; p.setAttribute("role", "dialog"); p.setAttribute("aria-label", "Tour guiado"); document.body.appendChild(p); }
+  const st = TOUR_STEPS[tour.i], n = TOUR_STEPS.length;
+  p.innerHTML = `<div class="small muted" style="margin-bottom:4px">Tour guiado · paso ${tour.i + 1} de ${n}</div><h3>${esc(st.title)}</h3><p>${esc(st.text)}</p>
+    <div class="tb"><div class="dots" aria-hidden="true">${TOUR_STEPS.map((_, k) => `<i class="${k === tour.i ? "on" : ""}"></i>`).join("")}</div>
+    <div style="display:flex;gap:8px"><button class="btn ghost" data-t="exit">Salir</button>${tour.i > 0 ? '<button class="btn alt" data-t="prev">Anterior</button>' : ""}<button class="btn" data-t="next">${tour.i === n - 1 ? "Terminar" : "Siguiente"}</button></div></div>`;
+}
+async function tourGo(i) {
+  if (!tour) return;
+  const token = (tour.token = (tour.token || 0) + 1);
+  tour.i = Math.max(0, Math.min(i, TOUR_STEPS.length - 1));
+  const st = TOUR_STEPS[tour.i];
+  $$(".overlay, .lb").forEach(o => o.remove());
+  $$(".tour-hl").forEach(e => e.classList.remove("tour-hl"));
+  tourPanel();
+  if (st.prep) await st.prep();
+  if (token !== tour.token) return;
+  if (location.hash === st.route) route(); else location.hash = st.route;
+  for (let n = 0; n < 30; n++) {
+    await sleep(120);
+    if (token !== tour.token) return;
+    const el = st.sel && $(st.sel);
+    if (el) { el.classList.add("tour-hl"); el.scrollIntoView({ block: st.scroll ? "start" : "center", behavior: "smooth" }); break; }
+  }
+  if (st.after && token === tour.token) await st.after();
+}
+function tourEnd(finished) {
+  if (!tour) return;
+  tour = null;
+  $("#tourPanel")?.remove(); $$(".tour-hl").forEach(e => e.classList.remove("tour-hl")); $$(".overlay").forEach(o => o.remove());
+  store.set("orders", orders().filter(o => !o.tour));
+  sel = blankSel(null);
+  if (/#\/(ticket|checkout)/.test(location.hash)) location.hash = "#/";
+  toast(finished ? "Fin del tour. ¡Gracias por recorrerlo!" : "Tour cerrado.");
+}
+document.addEventListener("click", e => {
+  if (e.target.closest("#tourBtn")) { tour = { i: 0 }; tourGo(0); return; }
+  const b = e.target.closest("[data-t]");
+  if (!b || !tour) return;
+  if (b.dataset.t === "exit") tourEnd(false);
+  else if (b.dataset.t === "prev") tourGo(tour.i - 1);
+  else if (tour.i >= TOUR_STEPS.length - 1) tourEnd(true);
+  else tourGo(tour.i + 1);
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape" && tour && !$(".lb")) tourEnd(false); });
 
 route();
 </script>
